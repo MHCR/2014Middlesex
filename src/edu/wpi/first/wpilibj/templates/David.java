@@ -1,10 +1,10 @@
+
 /*----------------------------------------------------------------------------*/
 /* Copyright (c) FIRST 2008. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -22,25 +22,28 @@ import edu.wpi.first.wpilibj.Watchdog;
  * directory.
  */
 public class David extends IterativeRobot {
-	RobotDrive m_robotDrive;
-	int m_dsPackets;
 
-        static final int RIGHTSTICK_USBPORT = 1;
-        static final int LEFTSTICK_USBPORT  = 2;
-	Joystick m_rightStick;
-	Joystick m_leftStick;
+    RobotDrive m_robotDrive;
+    int m_dsPackets;
 
-	static final int NUM_JOYSTICK_BUTTONS = 16;
-	boolean[] m_rightStickButtonState = new boolean[(NUM_JOYSTICK_BUTTONS+1)];
-	boolean[] m_leftStickButtonState = new boolean[(NUM_JOYSTICK_BUTTONS+1)];
-        
-        static final int LEFT_FRONT_DRIVEMOTOR = 1;
-        static final int RIGHT_FRONT_DRIVEMOTOR = 2;
-        static final int LEFT_REAR_DRIVEMOTOR = 3;
-        static final int RIGHT_REAR_DRIVEMOTOR = 4;
-        
+    static final int RIGHTSTICK_USBPORT = 1;
+    static final int LEFTSTICK_USBPORT = 2;
+    Joystick m_rightStick;
+    Joystick m_leftStick;
+
+    static final int NUM_JOYSTICK_BUTTONS = 16;
+    boolean[] m_rightStickButtonState = new boolean[(NUM_JOYSTICK_BUTTONS + 1)];
+    boolean[] m_leftStickButtonState = new boolean[(NUM_JOYSTICK_BUTTONS + 1)];
+    static boolean B2P;
+    static boolean PM;
+
+    static final int LEFT_FRONT_DRIVEMOTOR = 1;
+    static final int RIGHT_FRONT_DRIVEMOTOR = 2;
+    static final int LEFT_REAR_DRIVEMOTOR = 3;
+    static final int RIGHT_REAR_DRIVEMOTOR = 4;
+
     public David() {
-	// Create a robot using standard right/left robot drive on PWMS 1, 2, 3, and #4
+        // Create a robot using standard right/left robot drive on PWMS 1, 2, 3, and #4
         m_robotDrive = new RobotDrive(LEFT_FRONT_DRIVEMOTOR, LEFT_REAR_DRIVEMOTOR,
                 RIGHT_FRONT_DRIVEMOTOR, RIGHT_REAR_DRIVEMOTOR);
 
@@ -52,36 +55,67 @@ public class David extends IterativeRobot {
 
         // Iterate over all the buttons on each joystick, setting state to false for each						// start counting buttons at button 1
         for (int buttonNum = 1; buttonNum <= NUM_JOYSTICK_BUTTONS; buttonNum++) {
-                m_rightStickButtonState[buttonNum] = false;
-                m_leftStickButtonState[buttonNum] = false;
+            m_rightStickButtonState[buttonNum] = false;
+            m_leftStickButtonState[buttonNum] = false;
         }
         System.out.println("David() constructor completed.\n");
     }
-    
+
     public void bookkeeping() {
         Watchdog.getInstance().feed();
         m_dsPackets++;
     }
-    
+
     public void robotInit() {
         System.out.println("RobotInit() completed.\n");
+        B2P = false;
+        PM = false;
     }
 
     public void diabledPeriodic() {
-	bookkeeping();
+        bookkeeping();
     }
-    
+
     public void autonomousPeriodic() {
-	bookkeeping();
+        bookkeeping();
     }
 
     public void teleopPeriodic() {
         bookkeeping();
-        m_robotDrive.tankDrive(m_leftStick, m_rightStick);
+        double x, y;
+        x = m_leftStick.getY();
+        y = m_rightStick.getY();
+        if (m_leftStick.getTrigger()) {
+            x = y;
+        }
+        if (m_rightStick.getRawButton(2)) {
+            if (!B2P) {
+                PM = !PM;
+                B2P = true;
+            }
+        } else {
+            B2P = false;
+        }
+
+        if (PM) {
+            if (x < 0) {
+                x = x * -x;
+            } else {
+                x = x * x;
+            }
+            if (y < 0) {
+                y = y * -y;
+            } else {
+                y = y * y;
+            }
+
+        }
+
+        m_robotDrive.tankDrive(x, y);
     }
-    
+
     public void testPeriodic() {
         bookkeeping();
     }
-    
+
 }
