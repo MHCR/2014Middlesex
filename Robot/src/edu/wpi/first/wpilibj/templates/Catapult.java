@@ -54,6 +54,7 @@ public class Catapult {
     public void control() {
         firedAuto = false;
         if(Logitech.getInstance().getR2()) {
+            Lights.getInstance().fire();
             firing = true;
             catapultMotor.set(-.75);
         } else if(!catapultSwitch.get() || !firing) {
@@ -66,11 +67,11 @@ public class Catapult {
      double timeT;
     public void fire() {
         if(!firedAuto) {
+            Lights.getInstance().fire();
             timeT = System.currentTimeMillis();
             firedAuto = true;
             firing = true;
             catapultMotor.set(-.75);
-          
         } else if((!catapultSwitch.get() || !firing) && (System.currentTimeMillis() - timeT) >1000 ) {
             catapultMotor.set(0);
             firing = false;

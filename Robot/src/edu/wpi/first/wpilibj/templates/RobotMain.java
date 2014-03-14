@@ -39,15 +39,15 @@ public class RobotMain extends IterativeRobot {
         //   ultraSonic = MaxbotixUltrasonic.getInstance();
         lights = Lights.getInstance();
         colorChooser = new SendableChooser();
-        colorChooser.addDefault("Alliance",new Integer(0));
-        colorChooser.addObject("Blue",new Integer(1));
-        colorChooser.addObject("Red",new Integer(2));
-        colorChooser.addObject("Green",new Integer(3));
-        colorChooser.addObject("Purple",new Integer(4));
-        colorChooser.addObject("Yellow",new Integer(5));
-        colorChooser.addObject("Teal",new Integer(6));
-        colorChooser.addObject("White",new Integer(7));
-        colorChooser.addObject("Off",new Integer(8));
+        colorChooser.addDefault("Alliance",new Integer(Lights.ALLIANCE));
+        colorChooser.addObject("Blue",new Integer(Lights.BLUE));
+        colorChooser.addObject("Red",new Integer(Lights.RED));
+        colorChooser.addObject("Green",new Integer(Lights.GREEN));
+        colorChooser.addObject("Purple",new Integer(Lights.PURPLE));
+        colorChooser.addObject("Yellow",new Integer(Lights.YELLOW));
+        colorChooser.addObject("Teal",new Integer(Lights.TEAL));
+        colorChooser.addObject("White",new Integer(Lights.WHITE));
+        colorChooser.addObject("Off",new Integer(Lights.OFF));
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Autonomous",new DriveRoutine());
@@ -62,10 +62,6 @@ public class RobotMain extends IterativeRobot {
      */
     public void robotPeriodic() {
         Watchdog.getInstance().feed();
-        lights.setColor(((Integer) colorChooser.getSelected()).intValue());
-        lights.checkCountdown();
-        lights.fire(Catapult.getInstance().isFiring());
-        lights.searching(Lights.NO);
     }
 
     public void disabledInit() {
@@ -100,10 +96,9 @@ public class RobotMain extends IterativeRobot {
      */
     public void teleopPeriodic() {
         robotPeriodic();
-        //System.out.println("Range: " + SmartDashboard.getNumber("Range"));
-        //SmartDashboard.putNumber("Range", 47);
-        //System.out.println(table.getBoolean("hot"));
-        LCD.print(1, "Range");
+        lights.setColor(((Integer) colorChooser.getSelected()).intValue());
+        lights.checkCountdown();
+        //lights.searching(Lights.NO);
         RobotDrive.getInstance().control();
         DidlerControl.getInstance().control();
         Catapult.getInstance().control();
@@ -117,10 +112,11 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during test mode
      */
     public void testPeriodic() {
-        Watchdog.getInstance().feed();
-        lights.setColor(((Integer) colorChooser.getSelected()).intValue());
-        lights.fire(Catapult.getInstance().isFiring());
+        robotPeriodic();
         lights.countdown();
+        RobotDrive.getInstance().control();
+        DidlerControl.getInstance().control();
+        Catapult.getInstance().control();
     }
 
 }

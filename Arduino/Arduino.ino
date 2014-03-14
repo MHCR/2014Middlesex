@@ -28,12 +28,12 @@
 #define SEARCH A0 //A0
 #define FOUND A1 //A1
 #define SHOOT A2 //A2
-#define COLOR1 A3 //A3
-#define COLOR2 A4 //A4
-#define COLOR3 A5 //A5
+#define RED A3 //A3
+#define GREEN A4 //A4
+#define BLUE A5 //A5
 
-Adafruit_NeoPixel leftStrip = Adafruit_NeoPixel(24, LEFT_STRIP_LED, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel rightStrip = Adafruit_NeoPixel(24, RIGHT_STRIP_LED, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel leftStrip = Adafruit_NeoPixel(19, LEFT_STRIP_LED, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel rightStrip = Adafruit_NeoPixel(19, RIGHT_STRIP_LED, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel left = Adafruit_NeoPixel(1, LEFT_LED, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel right = Adafruit_NeoPixel(1, RIGHT_LED, NEO_GRB + NEO_KHZ800);
 
@@ -50,9 +50,9 @@ int digitalPulse = LOW;
 int digitalSearch = LOW;
 int digitalFound = LOW;
 int digitalShoot = LOW;
-int digitalColor1 = LOW;
-int digitalColor2 = LOW;
-int digitalColor3 = LOW;
+int digitalRed = LOW;
+int digitalGreen = LOW;
+int digitalBlue = LOW;
 uint16_t brightness = 255;
 uint16_t wipe = 0;
 uint16_t bounceBack = false;
@@ -65,6 +65,8 @@ uint8_t green = 0;
 uint8_t blue = 0;
 boolean flashOn = false;
 int startMode = 0;
+int shotTracker = HIGH;
+boolean shooting = false;
 
 void setup() {
   Serial.begin(9600);
@@ -82,9 +84,9 @@ void setup() {
   pinMode(SEARCH, INPUT);
   pinMode(FOUND, INPUT);
   pinMode(SHOOT, INPUT);
-  pinMode(COLOR1, INPUT);
-  pinMode(COLOR2, INPUT);
-  pinMode(COLOR3, INPUT);
+  pinMode(RED, INPUT);
+  pinMode(GREEN, INPUT);
+  pinMode(BLUE, INPUT);
   pinMode(ON_BOARD_LED, OUTPUT);
   leftStrip.begin();
   rightStrip.begin();
@@ -102,9 +104,9 @@ void loop() {
   digitalSearch = digitalRead(SEARCH);
   digitalFound = digitalRead(FOUND);
   digitalShoot = digitalRead(SHOOT);
-  digitalColor1 = digitalRead(COLOR1);
-  digitalColor2 = digitalRead(COLOR2);
-  digitalColor3 = digitalRead(COLOR3);
+  digitalRed = digitalRead(RED);
+  digitalGreen = digitalRead(GREEN);
+  digitalBlue = digitalRead(BLUE);
   if(wait>0) {
     --wait;
     delay(1);
@@ -113,68 +115,43 @@ void loop() {
       setMode(1);
       count();
     } else {
-      if(wipe==0) {
-        switch(digitalColor1+digitalColor2*2+digitalColor3*4) {
-          default:
-            red = 0;
-            green = 0;
-            blue = 255;
-            break;
-          case 1:
-            red = 255;
-            green = 0;
-            blue = 0;
-            break;
-          case 2:
-            red = 0;
-            green = 255;
-            blue = 0;
-            break;
-          case 3:
-            red = 255;
-            green = 0;
-            blue = 255;
-            break;
-          case 4:
-            red = 255;
-            green = 255;
-            blue = 0;
-            break;
-          case 5:
-            red = 0;
-            green = 255;
-            blue = 255;
-            break;
-          case 6:
-            red = 255;
-            green = 255;
-            blue = 255;
-            break;
-          case 7:
-            red = 0;
-            green = 0;
-            blue = 0;
-            break;
-        }
+      if(wipe==leftStrip.numPixels()) {
+          red = digitalRed*255;
+          green = digitalGreen*255;
+          blue = digitalBlue*255;
+          shooting = false;
       }
-      if (digitalShoot == HIGH) {
-        takeShot();
+      if (digitalShoot == shotTracker) {
+        shooting = true;
+        if(shotTracker==HIGH) {
+          shotTracker = LOW;
+        } else {
+          shotTracker = HIGH;
+        }
       }
       if(brightness<255) {
         ++brightness;
       }
-      if(digitalSearch == HIGH) {
+      if(shooting) {
         setMode(2);
+        brightness = 255;
         colorWipe(red,green,blue);
-        wait = 50;
-      } else if(digitalFound == HIGH) {
+        wait = 10;
+      } else if(!digitalRed&&!digitalGreen&!digitalBlue) {
         setMode(3);
+        off();
+        wait = 10;
+      } if(digitalSearch == HIGH) {
+        setMode(4);
+        colorWipe(red,green,blue);
+        wait = 10;
+      } else if(digitalFound == HIGH) {
+        setMode(5);
         flash(red,green,blue);
         wait = 250;
       } else {
-        setMode(4);
+        setMode(6);
         setColor(red,green,blue);
-        wait = 50;
       }
     }
   }
@@ -228,6 +205,7 @@ void setStripColor(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 void off() {
+  brightness = 0;
   setColor(0,0,0);
 }
 
@@ -296,13 +274,13 @@ void colorWipe(uint8_t r, uint8_t g, uint8_t b) {
   setBrightness();
   left.setPixelColor(0, r, g, b);
   right.setPixelColor(0, r, g, b);
-  if(wipe<leftStrip.numPixels()) {
+  if(wipe>0) {
     leftStrip.setPixelColor(wipe, r, g, b);
     rightStrip.setPixelColor(wipe, r, g, b);
-    ++wipe;
+    --wipe;
   } else {
     setStripColor(0,0,0);
-    wipe = 0;
+    wipe = leftStrip.numPixels();
   }
   showPixels();
 }
@@ -349,7 +327,7 @@ void printHtml() {
         if (c == '\n' && currentLineIsBlank) {
           client.println("HTTP/1.1 200 OK\nContent-Type: text/html\nConnection: close\nRefresh: 5\n\n<!DOCTYPE HTML>\n<html>");
           client.println("<table>");
-          for(int i=0;i<21;++i) {
+          for(int i=0;i<=22;++i) {
             client.print("<tr>\n<td>");
             switch(i) {
               case 0:
@@ -415,6 +393,12 @@ void printHtml() {
               case 20:
                 client.print("mode");
                 break;
+              case 21:
+                client.print("next shot on");
+                break;
+              case 22:
+                client.print("shooting");
+                break;
             }
             client.print("</td>\n<td>");
             switch(i) {
@@ -437,13 +421,13 @@ void printHtml() {
                 client.print(digitalShoot);
                 break;
               case 6:
-                client.print(digitalColor1);
+                client.print(digitalRed);
                 break;
               case 7:
-                client.print(digitalColor2);
+                client.print(digitalGreen);
                 break;
               case 8:
-                client.print(digitalColor3);
+                client.print(digitalBlue);
                 break;
               case 9:
                 client.print(brightness);
@@ -480,6 +464,12 @@ void printHtml() {
                 break;
               case 20:
                 client.print(startMode);
+                break;
+              case 21:
+                client.print(shooting);
+                break;
+              case 22:
+                client.print(shotTracker);
                 break;
             }
             client.println("</td>\n</tr>");
