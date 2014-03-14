@@ -69,7 +69,7 @@ public class DidlerControl {
                 didlerRotator.set(controller.getLeftStickY() / 2.0);
            
         }
-        didlerSpeed = DriverStation.getInstance().getAnalogIn(1) / 5.0;
+        didlerSpeed = 1.0;
        
         if (controller.getL1()) {            
        
