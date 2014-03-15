@@ -1,7 +1,16 @@
 <xml version="1.0">
 <dashboard>
+	<widget field="hot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="272"/>
+	</widget>
+	<widget field="Team Color" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="44"/>
+	</widget>
+	<widget field="Autonomous Mode" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="0"/>
+	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
-		<location x="586" y="472"/>
+		<location x="361" y="474"/>
 		<property name="Text" value="Connection"/>
 	</static-widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
@@ -10,7 +19,7 @@
 		<height>26</height>
 	</static-widget>
 	<static-widget class="findsquare.FindSquare">
-		<location x="435" y="1"/>
+		<location x="292" y="1"/>
 	</static-widget>
 </dashboard>
 <live-window>

@@ -158,120 +158,127 @@ public class FindSquare extends WPICameraExtension {
             double ratio = ((double) c.getWidth()) / ((double) c.getHeight());
             double ratio2 = ((double) c.getHeight()) / ((double) c.getWidth());
             rawImage.drawContour(c, WPIColor.BLUE, 2);
-            if ((ratio2 < .28 && ratio2 > 0.09 && c.getHeight() > kMinWidth && c.getHeight() < kMaxWidth) || (ratio < 0.28 && ratio > 0.03 && c.getWidth() > kMinWidth && c.getWidth() < kMaxWidth)) {
-                polygons.add(c.approxPolygon(5));
+            if(((double)c.getWidth() / (double)c.getHeight()) > 2.5){
+                table.putBoolean("hot", true);
+               
+                break;
+            } else {
+                table.putBoolean("hot", false);
             }
+//            if ((ratio2 < .28 && ratio2 > 0.09 && c.getHeight() > kMinWidth && c.getHeight() < kMaxWidth) || (ratio < 0.28 && ratio > 0.03 && c.getWidth() > kMinWidth && c.getWidth() < kMaxWidth)) {
+//              //  polygons.add(c.approxPolygon(5));
+//            }
         }
 
-        WPIPolygon square = null;
-        int highest = Integer.MAX_VALUE;
-//        if(polygons.size() == 0 || polygons.size() == 1 ){
-//            table.putBoolean("hot", false);
+//        WPIPolygon square = null;
+//        int highest = Integer.MAX_VALUE;
+////        if(polygons.size() == 0 || polygons.size() == 1 ){
+////            table.putBoolean("hot", false);
+////        }
+//        for (WPIPolygon p : polygons) {
+//            if(debug) {
+//                System.out.println("verticies " + p.getNumVertices());
+//            } else {
+//                table.putNumber(VERTICIES, p.getNumVertices());
+//            }
+//            rawImage.drawPolygon(p, WPIColor.BLUE, 4);
+//            if (p.isConvex() && p.getNumVertices() == 4) {
+//                // We passed the first test...we fit a rectangle to the polygon
+//                // Now do some more tests
+//                WPIPoint[] points = p.getPoints();
+//                // We expect to see a top line that is nearly horizontal, and two side lines that are nearly vertical
+//                int numNearlyHorizontal = 0;
+//                int numNearlyVertical = 0;
+//                for (int i = 0; i < 4; i++) {
+//                    double dy = points[i].getY() - points[(i + 1) % 4].getY();
+//                    double dx = points[i].getX() - points[(i + 1) % 4].getX();
+//                    double slope = Double.MAX_VALUE;
+//                    if (dx != 0) {
+//                        slope = Math.abs(dy / dx);
+//                    }
+//                    if (slope < kNearlyHorizontalSlope) {
+//                        ++numNearlyHorizontal;
+//                    } else if (slope > kNearlyVerticalSlope) {
+//                        ++numNearlyVertical;
+//                    }
+//                }
+//
+//                if (numNearlyHorizontal >= 1 && numNearlyVertical == 2) {
+//                    rawImage.drawPolygon(p, WPIColor.BLUE, 2);
+//
+//                    int pCenterX = (p.getX() + (p.getWidth() / 2));
+//                    int pCenterY = (p.getY() + (p.getHeight() / 2));
+//
+//                    rawImage.drawPoint(new WPIPoint(pCenterX, pCenterY), targetColor, 5);
+//                    if (pCenterY < highest) { // Because coord system is funny
+//                        square = p;
+//                        highest = pCenterY;
+//                    }
+//                }
+//            } else {
+//                rawImage.drawPolygon(p, WPIColor.GREEN, 1);
+//
+//            }
 //        }
-        for (WPIPolygon p : polygons) {
-            if(debug) {
-                System.out.println("verticies " + p.getNumVertices());
-            } else {
-                table.putNumber(VERTICIES, p.getNumVertices());
-            }
-            rawImage.drawPolygon(p, WPIColor.BLUE, 4);
-            if (p.isConvex() && p.getNumVertices() == 4) {
-                // We passed the first test...we fit a rectangle to the polygon
-                // Now do some more tests
-                WPIPoint[] points = p.getPoints();
-                // We expect to see a top line that is nearly horizontal, and two side lines that are nearly vertical
-                int numNearlyHorizontal = 0;
-                int numNearlyVertical = 0;
-                for (int i = 0; i < 4; i++) {
-                    double dy = points[i].getY() - points[(i + 1) % 4].getY();
-                    double dx = points[i].getX() - points[(i + 1) % 4].getX();
-                    double slope = Double.MAX_VALUE;
-                    if (dx != 0) {
-                        slope = Math.abs(dy / dx);
-                    }
-                    if (slope < kNearlyHorizontalSlope) {
-                        ++numNearlyHorizontal;
-                    } else if (slope > kNearlyVerticalSlope) {
-                        ++numNearlyVertical;
-                    }
-                }
-
-                if (numNearlyHorizontal >= 1 && numNearlyVertical == 2) {
-                    rawImage.drawPolygon(p, WPIColor.BLUE, 2);
-
-                    int pCenterX = (p.getX() + (p.getWidth() / 2));
-                    int pCenterY = (p.getY() + (p.getHeight() / 2));
-
-                    rawImage.drawPoint(new WPIPoint(pCenterX, pCenterY), targetColor, 5);
-                    if (pCenterY < highest) { // Because coord system is funny
-                        square = p;
-                        highest = pCenterY;
-                    }
-                }
-            } else {
-                rawImage.drawPolygon(p, WPIColor.GREEN, 1);
-
-            }
-        }
-
-        if (square != null) {
-            double ratio = (double)square.getHeight() / (double)square.getWidth();
-            table.putNumber("ratio", ratio);
-            if(ratio < .28 && ratio > 0.09 ){
-                
-                table.putBoolean(HOT, true);
-            }else{
-                table.putBoolean(HOT, false);
-            }
-            
-            double x = square.getX() + (square.getWidth() / 2);
-            x = (2 * (x / size.width())) - 1;
-            double y = square.getY() + (square.getHeight() / 2);
-            y = -((2 * (y / size.height())) - 1);
-            double squareWidth = square.getWidth();
-            double imageWidth = size.width();
-            if(debug) {
-                System.out.println("Square height: " + square.getHeight() + " Image Height: " + size.height() + " ratio: " + (double) (square.getHeight() / size.height()));
-            }
-            double azimuth = this.boundAngle0to360Degrees(x * kHorizontalFOVDeg / 2.0);
-            double range = (kTargetHeight) / Math.tan(kHorizontalFOVRad * ((double) square.getHeight() / (double) size.height()));
-            if(debug) {
-                System.out.println("Target found");
-                System.out.println("x: " + x);
-                System.out.println("y: " + y);
-                System.out.println("Height: " + square.getHeight() + " image height: " + size.height());
-                System.out.println("Width: " + square.getWidth() + " image width: " + size.width());
-                System.out.println("TargetWdith: " + kTargetWidth + " ratio: " + (squareWidth / imageWidth));
-                System.out.println("azimuth: " + azimuth);
-                System.out.println("range: " + range);
-            } else {
-                table.putNumber(RANGE, range);
-                table.putNumber(AZIMUTH, azimuth);
-            }
-            if (polygons.size() == 2 || polygons.size() == 3) {
-                WPIPolygon poly = null;
-                
-                
-            }
-        } else {
-            if(!debug) {
-                //get rid of old values
-                table.putNumber(RANGE, -1);
-                table.putNumber(AZIMUTH, -1);
-                table.putBoolean(HOT, false);
-            }
-        }
-        //either way
-        if(debug) {
-            System.out.println("Targets: "+polygons.size());
-        } else {
-            table.putNumber(TARGETS, polygons.size());
-           // table.putBoolean("hot", fire);
-        }
+//
+//        if (square != null) {
+//            double ratio = (double)square.getHeight() / (double)square.getWidth();
+//            table.putNumber("ratio", ratio);
+//            if(ratio < .28 && ratio > 0.09 ){
+//                
+//                table.putBoolean(HOT, true);
+//            }else{
+//                table.putBoolean(HOT, false);
+//            }
+//            
+//            double x = square.getX() + (square.getWidth() / 2);
+//            x = (2 * (x / size.width())) - 1;
+//            double y = square.getY() + (square.getHeight() / 2);
+//            y = -((2 * (y / size.height())) - 1);
+//            double squareWidth = square.getWidth();
+//            double imageWidth = size.width();
+//            if(debug) {
+//                System.out.println("Square height: " + square.getHeight() + " Image Height: " + size.height() + " ratio: " + (double) (square.getHeight() / size.height()));
+//            }
+//            double azimuth = this.boundAngle0to360Degrees(x * kHorizontalFOVDeg / 2.0);
+//            double range = (kTargetHeight) / Math.tan(kHorizontalFOVRad * ((double) square.getHeight() / (double) size.height()));
+//            if(debug) {
+//                System.out.println("Target found");
+//                System.out.println("x: " + x);
+//                System.out.println("y: " + y);
+//                System.out.println("Height: " + square.getHeight() + " image height: " + size.height());
+//                System.out.println("Width: " + square.getWidth() + " image width: " + size.width());
+//                System.out.println("TargetWdith: " + kTargetWidth + " ratio: " + (squareWidth / imageWidth));
+//                System.out.println("azimuth: " + azimuth);
+//                System.out.println("range: " + range);
+//            } else {
+//                table.putNumber(RANGE, range);
+//                table.putNumber(AZIMUTH, azimuth);
+//            }
+//            if (polygons.size() == 2 || polygons.size() == 3) {
+//                WPIPolygon poly = null;
+//                
+//                
+//            }
+//        } else {
+//            if(!debug) {
+//                //get rid of old values
+//                table.putNumber(RANGE, -1);
+//                table.putNumber(AZIMUTH, -1);
+//                table.putBoolean(HOT, false);
+//            }
+//        }
+//        //either way
+//        if(debug) {
+//            System.out.println("Targets: "+polygons.size());
+//        } else {
+//            table.putNumber(TARGETS, polygons.size());
+//           // table.putBoolean("hot", fire);
+//        }
 
         // Draw a crosshair
-        rawImage.drawLine(linePt1, linePt2, targetColor, 2);
-        rawImage.drawLine(linePt3, linePt4, targetColor, 2);
+//        rawImage.drawLine(linePt1, linePt2, targetColor, 2);
+//        rawImage.drawLine(linePt3, linePt4, targetColor, 2);
 
         WPIJavaCVExtension.releaseMemory();
 

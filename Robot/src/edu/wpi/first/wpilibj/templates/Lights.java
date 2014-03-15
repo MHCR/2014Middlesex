@@ -79,7 +79,7 @@ public class Lights {
         }
     }
     public void fire() {
-        if(shoot.get()==Relay.Value.kOff) {
+        if(Catapult.getInstance().isFiring()) {
             shoot.set(Relay.Value.kOn);
         } else {
             shoot.set(Relay.Value.kOff);
@@ -99,14 +99,14 @@ public class Lights {
                 }
                 break;
             case BLUE:
-                red.set(Relay.Value.kOn);
-                green.set(Relay.Value.kOff);
-                blue.set(Relay.Value.kOff);
-                break;
-            case RED:
                 red.set(Relay.Value.kOff);
                 green.set(Relay.Value.kOff);
                 blue.set(Relay.Value.kOn);
+                break;
+            case RED:
+                red.set(Relay.Value.kOn);
+                green.set(Relay.Value.kOff);
+                blue.set(Relay.Value.kOff);
                 break;
             case GREEN:
                 red.set(Relay.Value.kOff);
@@ -119,24 +119,24 @@ public class Lights {
                 blue.set(Relay.Value.kOn);
                 break;
             case YELLOW:
-                red.set(Relay.Value.kOff);
-                green.set(Relay.Value.kOff);
-                blue.set(Relay.Value.kOn);
+                red.set(Relay.Value.kOn);
+                green.set(Relay.Value.kOn);
+                blue.set(Relay.Value.kOff);
                 break;
             case TEAL:
-                red.set(Relay.Value.kOn);
-                green.set(Relay.Value.kOff);
+                red.set(Relay.Value.kOff);
+                green.set(Relay.Value.kOn);
                 blue.set(Relay.Value.kOn);
                 break;
             case WHITE:
-                red.set(Relay.Value.kOff);
+                red.set(Relay.Value.kOn);
                 green.set(Relay.Value.kOn);
                 blue.set(Relay.Value.kOn);
                 break;
             case OFF:
-                red.set(Relay.Value.kOn);
-                green.set(Relay.Value.kOn);
-                blue.set(Relay.Value.kOn);
+                red.set(Relay.Value.kOff);
+                green.set(Relay.Value.kOff);
+                blue.set(Relay.Value.kOff);
                 break;
         }
     }
@@ -149,10 +149,10 @@ public class Lights {
     }
     public void countdown() {
         count.set(Relay.Value.kOn);
-        if((System.currentTimeMillis()/1000) % 2 == 0) {
-            pulse.set(Relay.Value.kOff);
-        } else {
+        if(Math.floor(DriverStation.getInstance().getMatchTime()) % 2 == 0) {
             pulse.set(Relay.Value.kOn);
+        } else {
+            pulse.set(Relay.Value.kOff);
         }
     }
 }

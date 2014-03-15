@@ -79,7 +79,7 @@ public class RobotDrive { //Human interface devices
         }
     }
 
-    private void tankDrive(double right, double left) {
+    public void tankDrive(double right, double left) {
         setRightMotors(right * precRight);
         setLeftMotors(left * precLeft);
     }

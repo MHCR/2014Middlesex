@@ -1,7 +1,5 @@
 ||:findsquare.FindSquare
-java.lang.StringBuilder
 java.lang.System
-edu.wpi.first.wpijavacv.WPIPolygon
 findsquare.FindSquare
 java.util.logging.Logger
 java.util.ArrayList
@@ -10,7 +8,6 @@ com.googlecode.javacv.cpp.opencv_core
 edu.wpi.first.wpijavacv.WPIContour
 java.io.PrintStream
 com.googlecode.javacv.cpp.opencv_core$CvArr
-[Ledu.wpi.first.wpijavacv.WPIPoint;
 edu.wpi.first.wpijavacv.WPIImage
 edu.wpi.first.wpijavacv.WPIBinaryImage
 edu.wpi.first.smartdashboard.camera.WPICameraExtension
@@ -19,7 +16,6 @@ edu.wpi.first.wpijavacv.WPIPoint
 edu.wpi.first.wpijavacv.WPIColor
 com.googlecode.javacv.cpp.opencv_core$CvSize
 [Ljava.lang.String;
-java.util.Iterator
 edu.wpi.first.wpijavacv.WPIColorImage
 edu.wpi.first.smartdashboard.gui.DashboardFrame
 [Ledu.wpi.first.wpijavacv.WPIContour;
@@ -30,8 +26,8 @@ com.googlecode.javacv.cpp.opencv_imgproc$IplConvKernel
 com.googlecode.javacv.cpp.opencv_imgproc
 edu.wpi.first.wpijavacv.WPIJavaCVExtension
 com.googlecode.javacv.FFmpegFrameGrabber
-com.googlecode.javacv.FrameGrabber$Exception
 com.googlecode.javacv.FrameGrabber
+com.googlecode.javacv.FrameGrabber$Exception
 java.util.logging.Level
 ||:edu.wpi.first.wpijavacv.WPIJavaCVExtension
 edu.wpi.first.wpijavacv.WPIJavaCVExtension

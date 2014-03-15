@@ -83,12 +83,13 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         robotPeriodic();
+        lights.fire();
         auto = (Runnable) autoChooser.getSelected();
         auto.run();
     }
 
     public void teleopInit() {
-        
+        DidlerControl.getInstance().setDidlerSpeed(.75);
     }
 
     /**
@@ -98,6 +99,7 @@ public class RobotMain extends IterativeRobot {
         robotPeriodic();
         lights.setColor(((Integer) colorChooser.getSelected()).intValue());
         lights.checkCountdown();
+        lights.fire();
         //lights.searching(Lights.NO);
         RobotDrive.getInstance().control();
         DidlerControl.getInstance().control();
@@ -105,7 +107,7 @@ public class RobotMain extends IterativeRobot {
     }
 
     public void testInit() {
-        
+        DidlerControl.getInstance().setDidlerSpeed(1);
     }
 
     /**
@@ -117,6 +119,11 @@ public class RobotMain extends IterativeRobot {
         RobotDrive.getInstance().control();
         DidlerControl.getInstance().control();
         Catapult.getInstance().control();
+        if(Logitech.getInstance().getAbutton()) {
+            RobotDrive.getInstance().tankDrive(.1, .1);
+        } else {
+            RobotDrive.getInstance().tankDrive(0, 0);
+        }
     }
 
 }

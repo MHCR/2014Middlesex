@@ -33,6 +33,10 @@ public class DidlerControl {
     private Logitech controller;
     private double didlerSpeed = 0;
     
+    public void setDidlerSpeed(double value) {
+        didlerSpeed = value;
+    }
+    
     private DidlerControl() {
         controller = Logitech.getInstance();
         didlerRotator = new Talon(DIDLER_TALON_PWM);
@@ -67,9 +71,7 @@ public class DidlerControl {
         } else {
                // System.out.println("LEFTG STICKSAKJHDKJASHDKJASHDKJASHDKJAH: " + controller.getLeftStickY() / 2.0)   ;         
                 didlerRotator.set(controller.getLeftStickY() / 2.0);
-           
         }
-        didlerSpeed = 1.0;
        
         if (controller.getL1()) {            
        
