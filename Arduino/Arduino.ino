@@ -54,19 +54,17 @@ int digitalRed = LOW;
 int digitalGreen = LOW;
 int digitalBlue = LOW;
 uint16_t brightness = 255;
-uint16_t wipe = 0;
+uint16_t wipe = leftStrip.numPixels();
 uint16_t bounceBack = false;
 uint16_t removing = false;
 uint8_t wait = 0;
-int countDown = 10;
+int countDown = 11;
 boolean countUp = true;
 uint8_t red = 0;
 uint8_t green = 0;
 uint8_t blue = 0;
 boolean flashOn = false;
 int startMode = 0;
-int shotTracker = HIGH;
-boolean shooting = false;
 
 void setup() {
   Serial.begin(9600);
@@ -113,43 +111,47 @@ void loop() {
   } else {
     if(digitalCount == HIGH) {
       setMode(1);
+      brightness = 255;
       count();
     } else {
       if(wipe==leftStrip.numPixels()) {
-          red = digitalRed*255;
-          green = digitalGreen*255;
-          blue = digitalBlue*255;
-          shooting = false;
-      }
-      if (digitalShoot == shotTracker) {
-        shooting = true;
-        if(shotTracker==HIGH) {
-          shotTracker = LOW;
+        if(digitalRed==HIGH) {
+          red = 255;
         } else {
-          shotTracker = HIGH;
+          red = 0;
+        }
+        if(digitalGreen==HIGH) {
+          green = 255;
+        } else {
+          green = 0;
+        }
+        if(digitalBlue==HIGH) {
+          blue = 255;
+        } else {
+          blue = 0;
         }
       }
       if(brightness<255) {
         ++brightness;
       }
-      if(shooting) {
+      if(digitalShoot==HIGH) {
         setMode(2);
         brightness = 255;
         colorWipe(red,green,blue);
-        wait = 10;
-      } else if(!digitalRed&&!digitalGreen&!digitalBlue) {
+        wait = 50;
+      } else if(digitalRed==LOW&&digitalGreen==LOW&&digitalBlue==LOW) {
         setMode(3);
         off();
-        wait = 10;
+        wait = 50;
       } if(digitalSearch == HIGH) {
         setMode(4);
         colorWipe(red,green,blue);
-        wait = 10;
+        wait = 50;
       } else if(digitalFound == HIGH) {
         setMode(5);
         flash(red,green,blue);
         wait = 250;
-      } else {
+      } else if(digitalShoot==LOW && (digitalRed==HIGH||digitalGreen==HIGH||digitalBlue==HIGH) && digitalSearch ==LOW && digitalFound==LOW){
         setMode(6);
         setColor(red,green,blue);
       }
@@ -162,12 +164,17 @@ void loop() {
 }
 
 void setMode(int mode) {
+  Serial.print("mode: ");
+  Serial.println(mode);
   if(mode!=startMode) {
-    wipe = 0;
-    countDown = 10;
+    wipe = leftStrip.numPixels();
+    countDown = 11;
     countUp = true;
     flashOn = false;
     startMode = mode;
+    if(mode==2) {
+      off();
+    }
   }
 }
 
@@ -236,8 +243,11 @@ void count() {
 
 void countDownLights() {
   switch(countDown) {
-    case 9:
+    case 10:
       setColor(255,255,255);
+      break;
+    case 9:
+      setColor(255,128,255);
       break;
     case 8:
       setColor(255,0,255);
@@ -263,8 +273,9 @@ void countDownLights() {
     case 1:
       setColor(255,0,0);
       break;
-    case 0:
+    default:
       setColor(0,0,0);
+      countDown=11;
       break;
   }
 }
@@ -274,32 +285,29 @@ void colorWipe(uint8_t r, uint8_t g, uint8_t b) {
   setBrightness();
   left.setPixelColor(0, r, g, b);
   right.setPixelColor(0, r, g, b);
-  if(wipe>0) {
+  if(wipe>=0) {
     leftStrip.setPixelColor(wipe, r, g, b);
     rightStrip.setPixelColor(wipe, r, g, b);
     --wipe;
-  } else {
-    setStripColor(0,0,0);
-    wipe = leftStrip.numPixels();
   }
   showPixels();
 }
 
 //TODO: bounce back and forth on the strip
-void colorBounce(uint8_t r, uint8_t g, uint8_t b) {
-  setBrightness();
-  left.setPixelColor(0, r, g, b);
-  right.setPixelColor(0, r, g, b);
-  if(wipe<leftStrip.numPixels()) {
-    leftStrip.setPixelColor(wipe, r, g, b);
-    rightStrip.setPixelColor(wipe, r, g, b);
-    ++wipe;
-  } else {
-    setStripColor(0,0,0);
-    wipe = 0;
-  }
-  showPixels();
-}
+//void colorBounce(uint8_t r, uint8_t g, uint8_t b) {
+//  setBrightness();
+//  left.setPixelColor(0, r, g, b);
+//  right.setPixelColor(0, r, g, b);
+//  if(wipe<leftStrip.numPixels()) {
+//    leftStrip.setPixelColor(wipe, r, g, b);
+//    rightStrip.setPixelColor(wipe, r, g, b);
+//    ++wipe;
+//  } else {
+//    setStripColor(0,0,0);
+//    wipe = 0;
+//  }
+//  showPixels();
+//}
 
 void flash(uint8_t r, uint8_t g, uint8_t b) {
   if(flashOn) {
@@ -327,7 +335,7 @@ void printHtml() {
         if (c == '\n' && currentLineIsBlank) {
           client.println("HTTP/1.1 200 OK\nContent-Type: text/html\nConnection: close\nRefresh: 5\n\n<!DOCTYPE HTML>\n<html>");
           client.println("<table>");
-          for(int i=0;i<=22;++i) {
+          for(int i=0;i<=20;++i) {
             client.print("<tr>\n<td>");
             switch(i) {
               case 0:
@@ -392,12 +400,6 @@ void printHtml() {
                 break;
               case 20:
                 client.print("mode");
-                break;
-              case 21:
-                client.print("next shot on");
-                break;
-              case 22:
-                client.print("shooting");
                 break;
             }
             client.print("</td>\n<td>");
@@ -464,12 +466,6 @@ void printHtml() {
                 break;
               case 20:
                 client.print(startMode);
-                break;
-              case 21:
-                client.print(shooting);
-                break;
-              case 22:
-                client.print(shotTracker);
                 break;
             }
             client.println("</td>\n</tr>");
