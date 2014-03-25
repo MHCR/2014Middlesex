@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <Dhcp.h>
 #include <Dns.h>
+#include <Math.h>
 #include <Ethernet.h>
 #include <EthernetClient.h>
 #include <EthernetServer.h>
@@ -289,6 +290,28 @@ void colorWipe(uint8_t r, uint8_t g, uint8_t b) {
     leftStrip.setPixelColor(wipe, r, g, b);
     rightStrip.setPixelColor(wipe, r, g, b);
     --wipe;
+  }
+  showPixels();
+}
+double seed = 0.1;
+double wipeSeed = 19;
+
+void colorWipeCool(uint8_t r, uint8_t g, uint8_t b) {
+  int color = Math.sin(seed) * 255;
+  seed >= Math.PI * 2 ? 0.1: seed + .1;
+  seed = seed + 1;
+  
+  setBrightness();
+  left.setPixelColor(0, color, color,  color);
+  right.setPixelColor(0,  255 - color,255 - color,  255 - color);
+  if(wipeSeed>=0) {
+    leftStrip.setPixelColor(wipeSeed, color, color, color);
+    rightStrip.setPixelColor(wipeSeed, 255 - color,255 - color,  255 - color);
+    if(wipeSeed == 0{
+      wipeSeed = 19;
+    }else{
+    --wipeSeed;
+    }
   }
   showPixels();
 }
