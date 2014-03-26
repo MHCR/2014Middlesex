@@ -51,8 +51,8 @@ public class RobotMain extends IterativeRobot {
         colorChooser.addObject("Off",new Integer(Lights.OFF));
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
-        autoChooser.addDefault("Autonomous",new DriveRoutine());
-        autoChooser.addObject("Two Ball", new TwoBallAuto());
+        autoChooser.addObject("Autonomous",new DriveRoutine());
+        autoChooser.addDefault("Two Ball", TwoBallAuto.getInstance());
         SmartDashboard.putData("Autonomous Mode",autoChooser);
         //if we go a second and seem to loop infinitely kill the robot
         Watchdog.getInstance().setExpiration(1);
@@ -78,6 +78,8 @@ public class RobotMain extends IterativeRobot {
     }
 
     public void autonomousInit() {
+        TwoBallAuto.getInstance().resetRoutine();
+        Catapult.getInstance().resetAuto();
     }
 
     /**
