@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.autonomous.DriveRoutine;
+import edu.wpi.first.wpilibj.templates.autonomous.TwoBallAuto;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -51,6 +52,7 @@ public class RobotMain extends IterativeRobot {
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
         autoChooser.addDefault("Autonomous",new DriveRoutine());
+        autoChooser.addObject("Two Ball", new TwoBallAuto());
         SmartDashboard.putData("Autonomous Mode",autoChooser);
         //if we go a second and seem to loop infinitely kill the robot
         Watchdog.getInstance().setExpiration(1);
