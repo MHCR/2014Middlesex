@@ -99,4 +99,18 @@ public class DidlerControl {
         }
     }
     
+    public void spinDidlers(double didlerSpeed){
+         rightDidler.set(didlerSpeed * didlerSpeed * -1.0);            
+         leftDidler.set(didlerSpeed * 1.0F);
+    }
+    
+  
+    public boolean isSpinning(){
+        return (Math.abs((leftDidler.get() + rightDidler.get()) / 2.0) > .1);
+    }
+    
+    public boolean isDropping(){
+        return (Math.abs(didlerRotator.get()) > .1);
+    }
+    
 }

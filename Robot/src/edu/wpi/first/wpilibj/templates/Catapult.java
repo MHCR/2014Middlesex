@@ -64,19 +64,34 @@ public class Catapult {
         }
     }
      double timeT;
-    public void fire() {
+    public boolean fire() {
         if(!firedAuto) {
             timeT = System.currentTimeMillis();
             firedAuto = true;
             firing = true;
             catapultMotor.set(-.75);
+            return false;
         } else if((!catapultSwitch.get() || !firing) && (System.currentTimeMillis() - timeT) >1000 ) {
             catapultMotor.set(0);
             firing = false;
+            return true;
         } else {
             catapultMotor.set(-.75);
+            return false;
         }
          
     }
+    
+    public void resetAuto(){
+        firedAuto = false;
+        timeT = 0;
+        firing = false;
+    }
+    
+    public boolean isLimitHit(){
+        return !(catapultSwitch.get());
+    }
+    
+    
 
 }
