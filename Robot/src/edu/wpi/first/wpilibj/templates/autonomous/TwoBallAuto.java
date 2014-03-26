@@ -75,7 +75,6 @@ public class TwoBallAuto implements Runnable {
                         if (catapult.fire()) {
                             if (!firedOnce) {
                                 catapult.resetAuto();
-                                fireTime = DriverStation.getInstance().getMatchTime();
                                 firedOnce = true;
                             }
                         }
