@@ -49,7 +49,7 @@ public class TwoBallAuto implements Runnable {
         driveSpeed = DriverStation.getInstance().getAnalogIn(3) / 5.0;
         intakeDelay = DriverStation.getInstance().getAnalogIn(4);
         
-        if (DriverStation.getInstance().getMatchTime() > 1.5 && drive(DISTANCE)) {
+        if (DriverStation.getInstance().getMatchTime() > 1.0 && drive(DISTANCE)) {
             drive.stop();
             if (firedOnce) {
                 if (fireTime == 0) {
@@ -61,9 +61,14 @@ public class TwoBallAuto implements Runnable {
                     didlers.spinDidlers(didlerIntakeSpeed);
 
                 } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay) {
+                    if((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay + 1){//sometimes it pulls the didlers up and sometimes it doesnt
                     didlers.moveDidlers(0);
                     didlers.spinDidlers(0);
                     catapult.fire();
+                    }else{
+                        didlers.spinDidlers(0);
+                        didlers.moveDidlers(didlerDropSpeed * -1.0);
+                    }
                 }
 
             } else {
@@ -102,10 +107,10 @@ public class TwoBallAuto implements Runnable {
         if (getDistanceTraveled() < distance) {
             if (offset > 40) {
                 drive.setLeftMotors(-1.0 * driveSpeed);
-                drive.setRightMotors((-1.0 * driveSpeed) -.1);
+                drive.setRightMotors((-1.0 * driveSpeed) +.1);
             } else if (offset < -40) {
                 drive.setRightMotors(-1.0 * driveSpeed);
-                drive.setLeftMotors((-1.0 * driveSpeed) -.1);
+                drive.setLeftMotors((-1.0 * driveSpeed) +.1);
             } else {
                 drive.setRightMotors(-1.0 * driveSpeed);
                 drive.setLeftMotors(-1.0 * driveSpeed);
