@@ -61,14 +61,11 @@ public class TwoBallAuto implements Runnable {
                     didlers.spinDidlers(didlerIntakeSpeed);
 
                 } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay) {
-                    if((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay + 1){//sometimes it pulls the didlers up and sometimes it doesnt
+                   
                     didlers.moveDidlers(0);
                     didlers.spinDidlers(0);
                     catapult.fire();
-                    }else{
-                        didlers.spinDidlers(0);
-                        didlers.moveDidlers(didlerDropSpeed * -1.0);
-                    }
+                  
                 }
 
             } else {
