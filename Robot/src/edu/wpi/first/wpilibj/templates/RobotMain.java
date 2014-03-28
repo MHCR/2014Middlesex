@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.autonomous.DriveRoutine;
+import edu.wpi.first.wpilibj.templates.autonomous.OneAndAHalfRoutineFuckinJeffAndHisNames;
 import edu.wpi.first.wpilibj.templates.autonomous.TwoBallAuto;
 
 /**
@@ -52,7 +53,8 @@ public class RobotMain extends IterativeRobot {
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
         autoChooser.addObject("Autonomous",new DriveRoutine());
-        autoChooser.addDefault("Two Ball", TwoBallAuto.getInstance());
+        autoChooser.addDefault("One and a half ball, jeff and his fuckin names", new OneAndAHalfRoutineFuckinJeffAndHisNames());
+        autoChooser.addObject("Two Ball", TwoBallAuto.getInstance());
         SmartDashboard.putData("Autonomous Mode",autoChooser);
         //if we go a second and seem to loop infinitely kill the robot
         Watchdog.getInstance().setExpiration(1);

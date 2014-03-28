@@ -25,6 +25,8 @@ public class OneAndAHalfRoutineFuckinJeffAndHisNames implements Runnable {
     private Catapult catapult;
     private double DISTANCE = EncoderControl.CLICKS_PER_INCH * 72;
     private int numTargets = 0;
+    private double didlerDropSpeed = .5;
+    private double didlerDragSpeed = .4;
 
     public OneAndAHalfRoutineFuckinJeffAndHisNames() {
         catapult = Catapult.getInstance();
@@ -36,19 +38,23 @@ public class OneAndAHalfRoutineFuckinJeffAndHisNames implements Runnable {
     }
 
     public void run() {
-        if (drive(DISTANCE)) {
+        if (DriverStation.getInstance().getMatchTime() > 1.0 && drive(DISTANCE)) {
             drive.stop();
             didlers.moveDidlers(.5);
+            didlers.spinDidlers(0);
             
             //TODO: this might be the issue with moving the didlers late we probably hit this first cycle
             if (DriverStation.getInstance().getMatchTime() >= 3) {
                 didlers.moveDidlers(0);
-                if(SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 9){ //if we finally see hot
+                if(SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5){ //if we finally see hot
                     catapult.fire();
                 } else if (catapult.isFiring()) { //if we are already firing finish up
                     catapult.fire();
                 }
             }
+        }else{
+            didlers.moveDidlers(didlerDropSpeed);
+            didlers.spinDidlers(didlerDragSpeed);
         }
     }
 
