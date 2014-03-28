@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package edu.wpi.first.wpilibj.templates;
+package com.frc869.robot.code2014;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -108,14 +108,6 @@ public class DidlerControl {
     
     public void moveDidlers(double speed) {
         if (!backwardD.get()) {
-            didlerRotator.set(0);
-        } else {
-            didlerRotator.set(speed);
-        }
-    }
-    
-    public void moveDidlers(double speed, boolean care) {
-        if (!backwardD.get() && care == true) {
             didlerRotator.set(0);
         } else {
             didlerRotator.set(speed);

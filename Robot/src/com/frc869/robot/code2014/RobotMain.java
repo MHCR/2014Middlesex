@@ -5,18 +5,16 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-package edu.wpi.first.wpilibj.templates;
+package com.frc869.robot.code2014;
 
+import com.frc869.robot.code2014.autonomous.Autonomous;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Watchdog;
-import edu.wpi.first.wpilibj.camera.AxisCamera;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.templates.autonomous.DriveRoutine;
-import edu.wpi.first.wpilibj.templates.autonomous.OneAndAHalfRoutineFuckinJeffAndHisNames;
-import edu.wpi.first.wpilibj.templates.autonomous.TwoBallAuto;
+import com.frc869.robot.code2014.autonomous.OneBallAuto;
+import com.frc869.robot.code2014.autonomous.OneAndAHalfAuto;
+import com.frc869.robot.code2014.autonomous.TwoBallAuto;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -32,10 +30,14 @@ public class RobotMain extends IterativeRobot {
      * used for any initialization code.
      */
     private MaxbotixUltrasonic ultraSonic;
-    private Runnable auto;
+    private Autonomous auto;
     private SendableChooser colorChooser;
     private SendableChooser autoChooser;
     private Lights lights;
+    private static final int DEFAULT = 0;
+    private static final int ONEBALL = 1;
+    private static final int ONEANDAHALF = 2;
+    private static final int TWOBALL = 3;
 
     public void robotInit() {
         //   ultraSonic = MaxbotixUltrasonic.getInstance();
@@ -52,9 +54,9 @@ public class RobotMain extends IterativeRobot {
         colorChooser.addObject("Off",new Integer(Lights.OFF));
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
-        autoChooser.addObject("Autonomous",new DriveRoutine());
-        autoChooser.addDefault("One and a half ball, jeff and his fuckin names", new OneAndAHalfRoutineFuckinJeffAndHisNames());
-        autoChooser.addObject("Two Ball", TwoBallAuto.getInstance());
+        autoChooser.addObject("Autonomous",new Integer(ONEBALL));
+        autoChooser.addDefault("One and a half ball, jeff and his fuckin names", new Integer(ONEANDAHALF));
+        autoChooser.addObject("Two Ball", new Integer(TWOBALL));
         SmartDashboard.putData("Autonomous Mode",autoChooser);
         //if we go a second and seem to loop infinitely kill the robot
         Watchdog.getInstance().setExpiration(1);
@@ -80,8 +82,24 @@ public class RobotMain extends IterativeRobot {
     }
 
     public void autonomousInit() {
-        TwoBallAuto.getInstance().resetRoutine();
-        Catapult.getInstance().resetAuto();
+        Integer valueObject = (Integer) autoChooser.getSelected();
+        int value = DEFAULT;
+        if(null!=valueObject) {
+            value = valueObject.intValue();
+        }
+        switch (value) {
+            case ONEBALL:
+                auto = new OneBallAuto();
+                break;
+            case ONEANDAHALF:
+            default:
+                auto = new OneAndAHalfAuto();
+                break;
+            case TWOBALL:
+                auto = new TwoBallAuto();
+                break;
+        }
+        auto.init();
     }
 
     /**
@@ -90,7 +108,6 @@ public class RobotMain extends IterativeRobot {
     public void autonomousPeriodic() {
         robotPeriodic();
         lights.fire();
-        auto = (Runnable) autoChooser.getSelected();
         auto.run();
     }
 

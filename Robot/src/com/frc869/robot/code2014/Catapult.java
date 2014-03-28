@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.wpi.first.wpilibj.templates;
+package com.frc869.robot.code2014;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -18,8 +17,8 @@ public class Catapult {
     private static final int TALON_PWM = 8;
     private static final int CATAPULT_LIMIT_DIO = 1;
     private static final int BALL_SETTLED_LIMIT_DIO = 2;
-    private Talon catapultMotor;
-    private DigitalInput catapultSwitch;
+    private final Talon catapultMotor;
+    private final DigitalInput catapultSwitch;
     
      private DigitalInput ballSettled;
 
