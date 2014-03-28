@@ -37,6 +37,10 @@ public class DidlerControl {
         didlerSpeed = value;
     }
     
+    public DigitalInput getForwardLimit(){
+        return forwardD;
+    }
+    
     private DidlerControl() {
         controller = Logitech.getInstance();
         didlerRotator = new Talon(DIDLER_TALON_PWM);
@@ -99,8 +103,16 @@ public class DidlerControl {
         }
     }
     
+    public void moveDidlers(double speed, boolean care) {
+        if (!backwardD.get() && care == true) {
+            didlerRotator.set(0);
+        } else {
+            didlerRotator.set(speed);
+        }
+    }
+    
     public void spinDidlers(double didlerSpeed){
-         rightDidler.set(didlerSpeed * didlerSpeed * -1.0);            
+         rightDidler.set(didlerSpeed * -1.0);            
          leftDidler.set(didlerSpeed * 1.0F);
     }
     

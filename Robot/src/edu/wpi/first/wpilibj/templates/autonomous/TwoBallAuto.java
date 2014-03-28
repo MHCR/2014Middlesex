@@ -25,14 +25,17 @@ public class TwoBallAuto implements Runnable {
     private Catapult catapult;
     private double DISTANCE = EncoderControl.CLICKS_PER_INCH * 72;
     private int numTargets = 0;
-    private double didlerDropSpeed = .2;
-    private double didlerDragSpeed = .2;
-    private double didlerIntakeSpeed = .8;
-    private double driveSpeed = .5;
+    private double didlerDropSpeed = .5;
+    private double didlerDragSpeed = .4;
+    private double didlerIntakeSpeed = 0.2;
+    private double didlerSettleSpeed = -.35;
+    private double driveSpeed = .4;
     private boolean firedOnce = false;
     private double fireTime = 0;
     private double intakeDelay = 3.0;
     private static TwoBallAuto instance;
+    private static final double settleTimeDelay = .5;
+    private double fireTimeDelay = 1.0;
 
     public TwoBallAuto() {
         catapult = Catapult.getInstance();
@@ -44,7 +47,7 @@ public class TwoBallAuto implements Runnable {
     }
 
     public void run() {
-        didlerDropSpeed = DriverStation.getInstance().getAnalogIn(1) / 5.0;
+        didlerSettleSpeed = -1.0 * DriverStation.getInstance().getAnalogIn(1) / 5.0;
         didlerDragSpeed = DriverStation.getInstance().getAnalogIn(2) / 5.0;
         driveSpeed = DriverStation.getInstance().getAnalogIn(3) / 5.0;
         intakeDelay = DriverStation.getInstance().getAnalogIn(4);
@@ -56,16 +59,20 @@ public class TwoBallAuto implements Runnable {
                     fireTime = DriverStation.getInstance().getMatchTime();
                 }
 
-                if ((DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay && !catapult.isFiring()) {
+                if ((DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay  && !catapult.isFiring()) {
                     didlers.moveDidlers(didlerDropSpeed);
-                    didlers.spinDidlers(didlerIntakeSpeed);
+                    didlers.spinDidlers(didlerIntakeSpeed +=  (didlerIntakeSpeed > .7) ?.00 : .02);
 
-                } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay) {
-                   
-                    didlers.moveDidlers(0);
+                }else if((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay - settleTimeDelay && (DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay + fireTimeDelay){
+                    if(didlers.getForwardLimit().get()){
+                        didlers.moveDidlers(didlerSettleSpeed, false);
+                    }
                     didlers.spinDidlers(0);
-                    catapult.fire();
-                  
+                } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay + fireTimeDelay) {                                       
+                    didlers.moveDidlers(0);
+                    System.out.println("firing");
+                    didlers.spinDidlers(0);
+                    catapult.fire();                                      
                 }
 
             } else {
@@ -130,6 +137,7 @@ public class TwoBallAuto implements Runnable {
     }
 
     public void resetRoutine() {
+        didlerIntakeSpeed = .2;
        firedOnce = false;
        fireTime = 0;
     }
