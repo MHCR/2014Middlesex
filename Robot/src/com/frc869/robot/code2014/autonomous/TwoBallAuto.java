@@ -38,7 +38,7 @@ public class TwoBallAuto extends Autonomous {
             case 0:
                 getDidlers().moveDidlers(didlerDropSpeed);
                 getDidlers().spinDidlers(didlerDragSpeed);
-                if(DriverStation.getInstance().getMatchTime() > 1.0) {
+                if(getModeTime() > .5) {
                     increaseMode();
                 }
                 break;
@@ -66,14 +66,12 @@ public class TwoBallAuto extends Autonomous {
                 }
                 break;
             case 4:
-                getDidlers().moveDidlers(didlerSettleSpeed);
-                if(!getDidlers().getBackwardLimit().get()){
+                if(!getDidlers().moveDidlers(didlerSettleSpeed)){
                     increaseMode();
                 }
                 break;
             case 5:
-                getDidlers().moveDidlers(.15);
-                if(!getDidlers().getBackwardLimit().get()){
+                if(!getDidlers().moveDidlers(.15)){
                     increaseMode();
                 }
                 break;

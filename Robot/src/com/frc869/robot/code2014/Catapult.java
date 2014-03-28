@@ -20,10 +20,11 @@ public class Catapult {
     private final Talon catapultMotor;
     private final DigitalInput catapultSwitch;
     
-     private DigitalInput ballSettled;
+    private DigitalInput ballSettled;
 
     private boolean firing;
 
+    private double fireTime;
     private static Catapult instance;
     private boolean firedAuto;
 
@@ -66,15 +67,14 @@ public class Catapult {
             catapultMotor.set(-1.00);
         }
     }
-     double timeT;
     public boolean fire() {
         if(!firedAuto) {
-            timeT = System.currentTimeMillis();
+            fireTime = System.currentTimeMillis();
             firedAuto = true;
             firing = true;
             catapultMotor.set(-1.00);
             return false;
-        } else if((!catapultSwitch.get() || !firing) && (System.currentTimeMillis() - timeT) >1000 ) {
+        } else if((!catapultSwitch.get() || !firing) && (System.currentTimeMillis() - fireTime) >1000 ) {
             catapultMotor.set(0);
             firing = false;
             return true;
@@ -87,7 +87,7 @@ public class Catapult {
     
     public void resetAuto(){
         firedAuto = false;
-        timeT = 0;
+        fireTime = 0;
         firing = false;
     }
     
@@ -98,7 +98,4 @@ public class Catapult {
     public DigitalInput getBallSettledSwitch(){
        return ballSettled;
     }
-    
-    
-
 }

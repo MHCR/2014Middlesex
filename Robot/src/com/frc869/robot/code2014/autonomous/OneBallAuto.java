@@ -24,13 +24,11 @@ public class OneBallAuto extends Autonomous {
                 }
                 break;
             case 1:
-                getDidlers().moveDidlers(.5);
-                if (getModeTime() > .5) {
+                if(getDidlers().moveDidlers(.5)) {
                     increaseMode();
                 }
                 break;
             case 2:
-                //all we want to do right now is disable things till we see hot or need to do an emergency shot
                 if(SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5){
                     increaseMode();
                 }

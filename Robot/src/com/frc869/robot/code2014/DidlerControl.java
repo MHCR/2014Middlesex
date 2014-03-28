@@ -25,32 +25,13 @@ public class DidlerControl {
     private static final int FORWARD_DIO = 4;
     private static final int BACKWARD_DIO = 3;
     
-    private Talon rightDidler;
-    private Talon leftDidler;
-    private Talon didlerRotator;
-    private DigitalInput forwardD;
-    private DigitalInput backwardD;
-    private Logitech controller;
+    private final Talon rightDidler;
+    private final Talon leftDidler;
+    private final Talon didlerRotator;
+    private final DigitalInput forwardD;
+    private final DigitalInput backwardD;
+    private final Logitech controller;
     private double didlerSpeed = 0;
-    
-    public void setDidlerSpeed(double value) {
-        didlerSpeed = value;
-    }
-    
-    public DigitalInput getForwardLimit(){
-        return forwardD;
-    }
-    
-    public boolean didlersRotating(){
-        if(Math.abs(didlerRotator.get()) < .1){
-            return true;
-        }
-        return false;
-    }
-    
-    public DigitalInput getBackwardLimit(){
-        return backwardD;
-    }
     
     private DidlerControl() {
         controller = Logitech.getInstance();
@@ -69,48 +50,39 @@ public class DidlerControl {
     }
     
     public void control() {
-        //System.out.println("forward: " + forwardD.get() + " back: " + backwardD.get());
-        if (!forwardD.get()) {
-            if (controller.getLeftStickY() > .2) {
-                didlerRotator.set(controller.getLeftStickY() / 2.0);
-            } else {
-                didlerRotator.set(0);
-                
-            }
-        } else if (!backwardD.get()) {
-            if (controller.getLeftStickY() < -.2) {
-                didlerRotator.set(controller.getLeftStickY() / 2.0);
-            } else {
-                didlerRotator.set(0);
-            }            
-        } else {
-               // System.out.println("LEFTG STICKSAKJHDKJASHDKJASHDKJASHDKJAH: " + controller.getLeftStickY() / 2.0)   ;         
-                didlerRotator.set(controller.getLeftStickY() / 2.0);
-        }
-       
+        moveDidlers(controller.getLeftStickY() / 2.0);
         if (controller.getL1()) {            
-       
             rightDidler.set(didlerSpeed * -1.0F);
-            
             leftDidler.set(didlerSpeed * 1.0F);
         } else if (controller.getR1()) {
             rightDidler.set(didlerSpeed * 1.0F);
-            
             leftDidler.set(didlerSpeed * -1.0F);
         } else {
             leftDidler.set(0);
             rightDidler.set(0);
         }
-        
-      //  System.out.println("left: " + leftDidler.get() + "right: " + rightDidler.get());
-        
     }
     
-    public void moveDidlers(double speed) {
-        if (!backwardD.get()) {
-            didlerRotator.set(0);
+    public boolean moveDidlers(double speed) {
+        if (!forwardD.get()) {
+            if (speed > .1) {
+                didlerRotator.set(speed);
+                return true;
+            } else {
+                didlerRotator.set(0);
+                return false;
+            }
+        } else if (!backwardD.get()) {
+            if (speed < -.1) {
+                didlerRotator.set(speed);
+                return true;
+            } else {
+                didlerRotator.set(0);
+                return false;
+            }            
         } else {
             didlerRotator.set(speed);
+            return true;
         }
     }
     
@@ -119,6 +91,9 @@ public class DidlerControl {
          leftDidler.set(didlerSpeed * 1.0F);
     }
     
+    public void setDidlerSpeed(double value) {
+        didlerSpeed = value;
+    }
   
     public boolean isSpinning(){
         return (Math.abs((leftDidler.get() + rightDidler.get()) / 2.0) > .1);
@@ -126,6 +101,10 @@ public class DidlerControl {
     
     public boolean isDropping(){
         return (Math.abs(didlerRotator.get()) > .1);
+    }
+    
+    public boolean didlersRotating(){
+        return Math.abs(didlerRotator.get()) < .1;
     }
     
 }

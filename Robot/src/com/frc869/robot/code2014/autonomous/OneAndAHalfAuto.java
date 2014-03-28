@@ -23,7 +23,7 @@ public class OneAndAHalfAuto extends Autonomous {
             case 0:
                 getDidlers().moveDidlers(didlerDropSpeed);
                 getDidlers().spinDidlers(didlerDragSpeed);
-                if(DriverStation.getInstance().getMatchTime() > 1.0) {
+                if(getModeTime() > .5) {
                     increaseMode();
                 }
                 break;
@@ -33,13 +33,11 @@ public class OneAndAHalfAuto extends Autonomous {
                 }
                 break;
             case 2:
-                getDidlers().moveDidlers(.5);
-                if (getModeTime() >= .5) {
+                if (!getDidlers().moveDidlers(.5)) {
                     increaseMode();
                 }
                 break;
             case 3:
-                //all we want to do right now is disable things till we see hot or need to do an emergency shot
                 if(SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5){
                     increaseMode();
                 }

@@ -81,14 +81,12 @@ public abstract class Autonomous implements Runnable {
                 drive.setRightMotors(-speed);
                 drive.setLeftMotors(-speed);
             }
+            return false;
         } else {
             drive.setLeftMotors(0);
             drive.setRightMotors(0);
             return true;
-
         }
-        return false;
-
     }
     
     public void init() {
