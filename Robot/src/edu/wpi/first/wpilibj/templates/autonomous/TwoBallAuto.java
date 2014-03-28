@@ -67,25 +67,25 @@ public class TwoBallAuto implements Runnable {
                     if (Logitech.getInstance().getAbutton()) {
                         ballBeenSettled = true;
                     }
-                    didlers.moveDidlers(didlerDropSpeed);
-                    didlers.spinDidlers(didlerIntakeSpeed += (didlerIntakeSpeed < .55) ? .01 : .00);
+                    //didlers.moveDidlers(didlerDropSpeed);
+                    //didlers.spinDidlers(didlerIntakeSpeed += (didlerIntakeSpeed < .55) ? .01 : .00);
 
                 } else if (hasBallBeenSettled() || ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay - settleTimeDelay && (DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay + fireTimeDelay)) {
                     if (didlers.getForwardLimit().get()) {
-                        didlers.moveDidlers(didlerSettleSpeed, false);
+                      //  didlers.moveDidlers(didlerSettleSpeed, false);
                     }
                     didlers.spinDidlers(0);
                 } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay + fireTimeDelay) {
-                    didlers.moveDidlers(.15);
+                    //didlers.moveDidlers(.15);
                     if(!didlers.getBackwardLimit().get()){
                         didlersRetracted = true;
                     }
-                    System.out.println("firing");
-                    didlers.spinDidlers(0);
+                    //System.out.println("firing");
+                    //didlers.spinDidlers(0);
                     
                     if (didlersRetracted) {
-                        didlers.moveDidlers(0);
-                        catapult.fire();
+                      //  didlers.moveDidlers(0);
+                        //catapult.fire();
                     }
                 }
 
@@ -95,7 +95,7 @@ public class TwoBallAuto implements Runnable {
                 if (DriverStation.getInstance().getMatchTime() >= 2.0) {
                     if (!didlers.isSpinning() && !didlers.isDropping() && !firedOnce) {
 
-                        if (catapult.fire()) {
+                        if (SmartDashboard.getBoolean("hot") && catapult.fire()) {
                             catapult.resetAuto();
                             firedOnce = true;
                         }
