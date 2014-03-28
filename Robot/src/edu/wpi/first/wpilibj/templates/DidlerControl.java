@@ -41,6 +41,17 @@ public class DidlerControl {
         return forwardD;
     }
     
+    public boolean didlersRotating(){
+        if(Math.abs(didlerRotator.get()) < .1){
+            return true;
+        }
+        return false;
+    }
+    
+    public DigitalInput getBackwardLimit(){
+        return backwardD;
+    }
+    
     private DidlerControl() {
         controller = Logitech.getInstance();
         didlerRotator = new Talon(DIDLER_TALON_PWM);

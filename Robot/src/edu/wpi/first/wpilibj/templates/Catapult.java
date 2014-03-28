@@ -17,8 +17,11 @@ public class Catapult {
 
     private static final int TALON_PWM = 8;
     private static final int CATAPULT_LIMIT_DIO = 1;
+    private static final int BALL_SETTLED_LIMIT_DIO = 2;
     private Talon catapultMotor;
     private DigitalInput catapultSwitch;
+    
+     private DigitalInput ballSettled;
 
     private boolean firing;
 
@@ -36,6 +39,7 @@ public class Catapult {
     private Catapult() {
         firing = false;
         firedAuto = false;
+       // ballSettled = new DigitalInput(BALL_SETTLED_LIMIT_DIO);
         catapultSwitch = new DigitalInput(CATAPULT_LIMIT_DIO);
         catapultMotor = new Talon(TALON_PWM);
     }
@@ -90,6 +94,10 @@ public class Catapult {
     
     public boolean isLimitHit(){
         return !(catapultSwitch.get());
+    }
+    
+    public DigitalInput getBallSettledSwitch(){
+       return ballSettled;
     }
     
     

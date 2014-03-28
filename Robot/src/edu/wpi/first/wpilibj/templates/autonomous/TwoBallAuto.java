@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.templates.Catapult;
 import edu.wpi.first.wpilibj.templates.DidlerControl;
 import edu.wpi.first.wpilibj.templates.EncoderControl;
+import edu.wpi.first.wpilibj.templates.Logitech;
 import edu.wpi.first.wpilibj.templates.RobotDrive;
 
 /**
@@ -36,6 +37,8 @@ public class TwoBallAuto implements Runnable {
     private static TwoBallAuto instance;
     private static final double settleTimeDelay = .5;
     private double fireTimeDelay = 1.0;
+    private boolean ballBeenSettled = false;
+    private boolean didlersRetracted = false;
 
     public TwoBallAuto() {
         catapult = Catapult.getInstance();
@@ -47,11 +50,12 @@ public class TwoBallAuto implements Runnable {
     }
 
     public void run() {
+
         didlerSettleSpeed = -1.0 * DriverStation.getInstance().getAnalogIn(1) / 5.0;
         didlerDragSpeed = DriverStation.getInstance().getAnalogIn(2) / 5.0;
         driveSpeed = DriverStation.getInstance().getAnalogIn(3) / 5.0;
         intakeDelay = DriverStation.getInstance().getAnalogIn(4);
-        
+
         if (DriverStation.getInstance().getMatchTime() > 1.0 && drive(DISTANCE)) {
             drive.stop();
             if (firedOnce) {
@@ -59,31 +63,41 @@ public class TwoBallAuto implements Runnable {
                     fireTime = DriverStation.getInstance().getMatchTime();
                 }
 
-                if ((DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay  && !catapult.isFiring()) {
+                if ((DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay && !catapult.isFiring()) {
+                    if (Logitech.getInstance().getAbutton()) {
+                        ballBeenSettled = true;
+                    }
                     didlers.moveDidlers(didlerDropSpeed);
-                    didlers.spinDidlers(didlerIntakeSpeed +=  (didlerIntakeSpeed > .7) ?.00 : .02);
+                    didlers.spinDidlers(didlerIntakeSpeed += (didlerIntakeSpeed < .55) ? .01 : .00);
 
-                }else if((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay - settleTimeDelay && (DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay + fireTimeDelay){
-                    if(didlers.getForwardLimit().get()){
+                } else if (hasBallBeenSettled() || ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay - settleTimeDelay && (DriverStation.getInstance().getMatchTime() - fireTime) < intakeDelay + fireTimeDelay)) {
+                    if (didlers.getForwardLimit().get()) {
                         didlers.moveDidlers(didlerSettleSpeed, false);
                     }
                     didlers.spinDidlers(0);
-                } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay + fireTimeDelay) {                                       
-                    didlers.moveDidlers(0);
+                } else if ((DriverStation.getInstance().getMatchTime() - fireTime) > intakeDelay + fireTimeDelay) {
+                    didlers.moveDidlers(.15);
+                    if(!didlers.getBackwardLimit().get()){
+                        didlersRetracted = true;
+                    }
                     System.out.println("firing");
                     didlers.spinDidlers(0);
-                    catapult.fire();                                      
+                    
+                    if (didlersRetracted) {
+                        didlers.moveDidlers(0);
+                        catapult.fire();
+                    }
                 }
 
             } else {
                 didlers.moveDidlers(0);
                 didlers.spinDidlers(0);
-                if (DriverStation.getInstance().getMatchTime() >= 3) {
+                if (DriverStation.getInstance().getMatchTime() >= 2.0) {
                     if (!didlers.isSpinning() && !didlers.isDropping() && !firedOnce) {
 
                         if (catapult.fire()) {
-                                catapult.resetAuto();
-                                firedOnce = true;                         
+                            catapult.resetAuto();
+                            firedOnce = true;
                         }
                     }
 
@@ -111,10 +125,10 @@ public class TwoBallAuto implements Runnable {
         if (getDistanceTraveled() < distance) {
             if (offset > 40) {
                 drive.setLeftMotors(-1.0 * driveSpeed);
-                drive.setRightMotors((-1.0 * driveSpeed) +.1);
+                drive.setRightMotors((-1.0 * driveSpeed) + .1);
             } else if (offset < -40) {
                 drive.setRightMotors(-1.0 * driveSpeed);
-                drive.setLeftMotors((-1.0 * driveSpeed) +.1);
+                drive.setLeftMotors((-1.0 * driveSpeed) + .1);
             } else {
                 drive.setRightMotors(-1.0 * driveSpeed);
                 drive.setLeftMotors(-1.0 * driveSpeed);
@@ -128,18 +142,24 @@ public class TwoBallAuto implements Runnable {
         return false;
 
     }
-    
-    public static TwoBallAuto getInstance(){
-        if(instance == null){
-            instance = new TwoBallAuto();          
+
+    public static TwoBallAuto getInstance() {
+        if (instance == null) {
+            instance = new TwoBallAuto();
         }
         return instance;
     }
 
     public void resetRoutine() {
         didlerIntakeSpeed = .2;
-       firedOnce = false;
-       fireTime = 0;
+        firedOnce = false;
+        fireTime = 0;
+        ballBeenSettled = false;
+        didlersRetracted = false;
+    }
+
+    private boolean hasBallBeenSettled() {
+        return ballBeenSettled;
     }
 
 }
