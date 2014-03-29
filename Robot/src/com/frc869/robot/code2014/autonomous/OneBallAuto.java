@@ -13,28 +13,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Kevvers
  */
 public class OneBallAuto extends Autonomous {
+
+    private static final double didlerDropSpeed = .5;
+
     public void routine() {
-        switch(getMode()) {
+        switch (getMode()) {
             default:
                 increaseMode();
                 break;
             case 0:
-                if(drive(DISTANCE,.5)) {
+                if (!getDidlers().moveDidlers(didlerDropSpeed)) {
                     increaseMode();
                 }
                 break;
             case 1:
-                if(getDidlers().moveDidlers(.5)) {
+                getDidlers().moveDidlers(didlerDropSpeed);
+                if (drive(DISTANCE, .5)) {
                     increaseMode();
                 }
                 break;
             case 2:
-                if(SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5){
+                if (SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5) {
                     increaseMode();
                 }
                 break;
             case 3:
-                if(getCatapult().fire()) {
+                if (getCatapult().fire()) {
                     increaseMode();
                 }
                 break;

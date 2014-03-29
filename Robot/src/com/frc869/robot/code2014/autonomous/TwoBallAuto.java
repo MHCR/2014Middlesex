@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  * @author Kevvers
  */
 public class TwoBallAuto extends Autonomous {
-    private static final double didlerDropSpeed = .5;
+    private static final double didlerDropSpeed = .35;
     private double didlerDragSpeed;
     private double didlerIntakeSpeed;
     private double didlerSettleSpeed;
@@ -71,7 +71,7 @@ public class TwoBallAuto extends Autonomous {
                 }
                 break;
             case 5:
-                if(!getDidlers().moveDidlers(.15)){
+                if(!getDidlers().moveDidlers(.25)){
                     increaseMode();
                 }
                 break;

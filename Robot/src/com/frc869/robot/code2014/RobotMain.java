@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.frc869.robot.code2014.autonomous.OneBallAuto;
 import com.frc869.robot.code2014.autonomous.OneAndAHalfAuto;
 import com.frc869.robot.code2014.autonomous.TwoBallAuto;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -68,6 +70,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void robotPeriodic() {
         Watchdog.getInstance().feed();
+        //Timer.delay(.01);
     }
 
     public void disabledInit() {

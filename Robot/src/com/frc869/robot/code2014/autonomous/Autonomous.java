@@ -98,9 +98,7 @@ public abstract class Autonomous implements Runnable {
             drive.stop();
             didlers.moveDidlers(0);
             didlers.spinDidlers(0);
-            if(catapult.isFiring()) {
-                catapult.fire();
-            }
+            
             resetTime = DriverStation.getInstance().getMatchTime();
         }
         resetMode = mode;

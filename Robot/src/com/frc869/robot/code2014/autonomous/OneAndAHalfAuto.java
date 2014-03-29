@@ -18,6 +18,7 @@ public class OneAndAHalfAuto extends Autonomous {
     public void routine() {
         switch(getMode()) {
             default:
+                
                 increaseMode();
                 break;
             case 0:
@@ -28,6 +29,8 @@ public class OneAndAHalfAuto extends Autonomous {
                 }
                 break;
             case 1:
+                getDidlers().moveDidlers(didlerDropSpeed);
+                getDidlers().spinDidlers(didlerDragSpeed);
                 if(drive(DISTANCE,.5)) {
                     increaseMode();
                 }
