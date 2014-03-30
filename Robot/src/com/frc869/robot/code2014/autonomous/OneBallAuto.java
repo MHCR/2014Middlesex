@@ -33,7 +33,7 @@ public class OneBallAuto extends Autonomous {
                 }
                 break;
             case 2:
-                if (getModeTime() > .75) {
+                if (getModeTime() > 1) {
                     increaseMode();
                 }
                 break;

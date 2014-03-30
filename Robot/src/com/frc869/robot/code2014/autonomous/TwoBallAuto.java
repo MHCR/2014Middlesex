@@ -51,21 +51,26 @@ public class TwoBallAuto extends Autonomous {
                 }
                 break;
             case 2:
-                if((getModeTime() > 1 && SmartDashboard.getBoolean("hot", false)) || DriverStation.getInstance().getMatchTime() > 4.95){
+                if (getModeTime() > 1) {
+                    increaseMode();
+                }
+                break;
+            case 3:
+                if((SmartDashboard.getBoolean("hot", false)) || DriverStation.getInstance().getMatchTime() > 4.95){
                     increaseMode();  
                 }
-            break;
-            case 3:
+                break;
+            case 4:
                 if (getCatapult().fire() || getModeTime() > .5) {
                     increaseMode();
                 }
                 break;
-            case 4:
+            case 5:
                 if(getModeTime() > .3){
                     increaseMode();                   
                 }
             break;
-            case 5:
+            case 6:
                 if(didlerIntakeSpeed < .65) {
                     didlerIntakeSpeed += .01;
                 }
@@ -76,17 +81,17 @@ public class TwoBallAuto extends Autonomous {
                     increaseMode();
                 }
                 break;
-            case 6:
+            case 7:
                 if(!getDidlers().moveDidlers(didlerSettleSpeed) || getModeTime() > 1.0){
                     increaseMode();
                 }
                 break;
-            case 7:
+            case 8:
                 if(!getDidlers().moveDidlers(.25) || getModeTime() > 1.0){
                     increaseMode();
                 }
                 break;
-            case 8:
+            case 9:
                 if (getCatapult().fire()) {
                     increaseMode();
                 }
