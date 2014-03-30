@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class OneAndAHalfAuto extends Autonomous {
     private static final double didlerDropSpeed = .5;
-    private static final double didlerDragSpeed = .4;
+    private static final double didlerDragSpeed = .45;
     public void routine() {
         switch(getMode()) {
             default:
@@ -41,7 +41,7 @@ public class OneAndAHalfAuto extends Autonomous {
                 }
                 break;
             case 3:
-                if(SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5){
+                if(SmartDashboard.getBoolean("hot",false) || DriverStation.getInstance().getMatchTime() >= 8.5){
                     increaseMode();
                 }
                 break;

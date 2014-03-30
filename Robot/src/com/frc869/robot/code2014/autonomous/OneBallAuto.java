@@ -33,11 +33,16 @@ public class OneBallAuto extends Autonomous {
                 }
                 break;
             case 2:
-                if (SmartDashboard.getBoolean("hot") || DriverStation.getInstance().getMatchTime() >= 8.5) {
+                if (getModeTime() > .75) {
                     increaseMode();
                 }
                 break;
             case 3:
+                if (SmartDashboard.getBoolean("hot",false) || DriverStation.getInstance().getMatchTime() >= 8.5) {
+                    increaseMode();
+                }
+                break;
+            case 4:
                 if (getCatapult().fire()) {
                     increaseMode();
                 }

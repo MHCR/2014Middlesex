@@ -56,6 +56,7 @@ public class Catapult {
     }
     
     public void control() {
+       
         firedAuto = false;
         if(Logitech.getInstance().getR2()) {
             firing = true;

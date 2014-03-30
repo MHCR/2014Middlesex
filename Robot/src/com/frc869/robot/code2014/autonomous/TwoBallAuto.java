@@ -6,6 +6,7 @@
 package com.frc869.robot.code2014.autonomous;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -50,12 +51,22 @@ public class TwoBallAuto extends Autonomous {
                 }
                 break;
             case 2:
+                if((getModeTime() > 1 && SmartDashboard.getBoolean("hot", false)) || DriverStation.getInstance().getMatchTime() > 4.95){
+                    increaseMode();  
+                }
+            break;
+            case 3:
                 if (getCatapult().fire() || getModeTime() > .5) {
                     increaseMode();
                 }
                 break;
-            case 3:
-                if(didlerIntakeSpeed < .55) {
+            case 4:
+                if(getModeTime() > .3){
+                    increaseMode();                   
+                }
+            break;
+            case 5:
+                if(didlerIntakeSpeed < .65) {
                     didlerIntakeSpeed += .01;
                 }
                 getDidlers().moveDidlers(didlerDropSpeed);
@@ -65,17 +76,17 @@ public class TwoBallAuto extends Autonomous {
                     increaseMode();
                 }
                 break;
-            case 4:
-                if(!getDidlers().moveDidlers(didlerSettleSpeed)){
-                    increaseMode();
-                }
-                break;
-            case 5:
-                if(!getDidlers().moveDidlers(.25)){
-                    increaseMode();
-                }
-                break;
             case 6:
+                if(!getDidlers().moveDidlers(didlerSettleSpeed) || getModeTime() > 1.0){
+                    increaseMode();
+                }
+                break;
+            case 7:
+                if(!getDidlers().moveDidlers(.25) || getModeTime() > 1.0){
+                    increaseMode();
+                }
+                break;
+            case 8:
                 if (getCatapult().fire()) {
                     increaseMode();
                 }

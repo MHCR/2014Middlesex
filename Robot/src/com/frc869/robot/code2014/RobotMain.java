@@ -115,7 +115,7 @@ public class RobotMain extends IterativeRobot {
     }
 
     public void teleopInit() {
-        DidlerControl.getInstance().setDidlerSpeed(.75);
+        DidlerControl.getInstance().setDidlerSpeed(.70);
     }
 
     /**

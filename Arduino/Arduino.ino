@@ -154,8 +154,8 @@ void loop() {
         wait = 250;
       } else if(digitalShoot==LOW && (digitalRed==HIGH||digitalGreen==HIGH||digitalBlue==HIGH) && digitalSearch ==LOW && digitalFound==LOW){
         setMode(6);
-        //setColor(red,green,blue);
-        colorWipeCool();
+        setColor(red,green,blue);
+        //colorWipeCool();
         wait = 50;
       }
     }
@@ -299,21 +299,19 @@ double seed = 0.1;
 double wipeSeed = 19;
 
 void colorWipeCool() {
-  int color = sin(seed) * 255;
-  seed >= PI * 2 ? 0.1: seed + ((PI * 2.0) / 10.0);
-  seed = seed + 1;
-  
+  int i = 0;
+  int j = 0;   
   setBrightness();
-  if(wipeSeed>=0) {
-    leftStrip.setPixelColor(wipeSeed, color, color, color);
-    rightStrip.setPixelColor(wipeSeed, 255 - color,255 - color,  255 - color);
-    if(wipeSeed == 0){
-      wipeSeed = 19;
-    }else{
-    --wipeSeed;
+  for(j = 0; j <= 19;j++){
+  for(i = 0; i < 255; i++){    
+      leftStrip.setPixelColor(j, i, 255 - i, i);
+      rightStrip.setPixelColor(j, i, 255 - i, i);
+      showPixels();      
     }
   }
-  showPixels();
+  
+   
+  
 }
 
 //TODO: bounce back and forth on the strip
