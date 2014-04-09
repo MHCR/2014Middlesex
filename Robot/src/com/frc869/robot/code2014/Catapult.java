@@ -6,6 +6,7 @@
 package com.frc869.robot.code2014;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Talon;
 
 /**
@@ -14,12 +15,17 @@ import edu.wpi.first.wpilibj.Talon;
  */
 public class Catapult {
 
+    private static final int CATAPULT_SAFETY_DIO = 4; //just an guess
+
     private static final int TALON_PWM = 8;
+
     private static final int CATAPULT_LIMIT_DIO = 1;
     private static final int BALL_SETTLED_LIMIT_DIO = 2;
+
     private final Talon catapultMotor;
+
+    private DigitalInput safety;
     private final DigitalInput catapultSwitch;
-    
     private DigitalInput ballSettled;
 
     private boolean firing;
@@ -39,7 +45,7 @@ public class Catapult {
     private Catapult() {
         firing = false;
         firedAuto = false;
-       // ballSettled = new DigitalInput(BALL_SETTLED_LIMIT_DIO);
+        // ballSettled = new DigitalInput(BALL_SETTLED_LIMIT_DIO);
         catapultSwitch = new DigitalInput(CATAPULT_LIMIT_DIO);
         catapultMotor = new Talon(TALON_PWM);
     }
@@ -54,49 +60,62 @@ public class Catapult {
     public boolean isFiring() {
         return firing;
     }
-    
+
     public void control() {
-       
-        firedAuto = false;
-        if(Logitech.getInstance().getR2()) {
-            firing = true;
-            catapultMotor.set(-1.00);
-        } else if(!catapultSwitch.get() || !firing) {
+        if (!isSafetyIn()) {
+            firedAuto = false;
+            if (Logitech.getInstance().getR2()) {
+                firing = true;
+                catapultMotor.set(-1.00);
+            } else if (!catapultSwitch.get() || !firing) {
+                catapultMotor.set(0);
+                firing = false;
+            } else {
+                catapultMotor.set(-1.00);
+            }
+        }else {
             catapultMotor.set(0);
-            firing = false;
-        } else {
-            catapultMotor.set(-1.00);
         }
     }
+
     public boolean fire() {
-        if(!firedAuto) {
-            fireTime = System.currentTimeMillis();
-            firedAuto = true;
-            firing = true;
-            catapultMotor.set(-1.00);
-            return false;
-        } else if((!catapultSwitch.get() || !firing) && (System.currentTimeMillis() - fireTime) >1000 ) {
-            catapultMotor.set(0);
-            firing = false;
-            return true;
+        if (!isSafetyIn()) {
+            if (!firedAuto) {
+                fireTime = System.currentTimeMillis();
+                firedAuto = true;
+                firing = true;
+                catapultMotor.set(-1.00);
+                return false;
+            } else if ((!catapultSwitch.get() || !firing) && (System.currentTimeMillis() - fireTime) > 1000) {
+                catapultMotor.set(0);
+                firing = false;
+                return true;
+            } else {
+                catapultMotor.set(-1.00);
+                return false;
+            }
         } else {
-            catapultMotor.set(-1.00);
+            catapultMotor.set(0);
             return false;
         }
-         
+
     }
-    
-    public void resetAuto(){
+
+    public void resetAuto() {
         firedAuto = false;
         fireTime = 0;
         firing = false;
     }
-    
-    public boolean isLimitHit(){
+
+    public boolean isLimitHit() {
         return !(catapultSwitch.get());
     }
+
+    public DigitalInput getBallSettledSwitch() {
+        return ballSettled;
+    }
     
-    public DigitalInput getBallSettledSwitch(){
-       return ballSettled;
+    private boolean isSafetyIn(){
+        return !safety.get() && !DriverStation.getInstance().getDigitalIn(8);
     }
 }
