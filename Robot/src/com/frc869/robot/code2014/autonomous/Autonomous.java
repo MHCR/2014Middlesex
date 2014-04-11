@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.DriverStation;
  * @author Kevvers
  */
 public abstract class Autonomous implements Runnable {
+
     protected static final double DISTANCE = EncoderControl.CLICKS_PER_INCH * 72;
-    private static double DISTANCE_TO_SPIN = (Math.PI * 11 * EncoderControl.CLICKS_PER_INCH) * 3.1;
     protected static final int drift = 40;
     private final RobotDrive drive;
     private final EncoderControl encoders;
@@ -26,6 +26,9 @@ public abstract class Autonomous implements Runnable {
     private int mode;
     private int resetMode;
     private double resetTime;
+
+    private static double DISTANCE_TO_SPIN = (Math.PI * 11 * EncoderControl.CLICKS_PER_INCH) * 3.1;
+
     public Autonomous() {
         catapult = Catapult.getInstance();
         didlers = DidlerControl.getInstance();
@@ -36,68 +39,19 @@ public abstract class Autonomous implements Runnable {
         resetMode = 0;
         resetTime = 0;
     }
+
     protected RobotDrive getDrive() {
         return drive;
     }
-    protected EncoderControl getEncoders() {
-        return encoders;
-    }
-    protected DidlerControl getDidlers() {
-        return didlers;
-    }
-    protected Catapult getCatapult() {
-        return catapult;
-    }
-    protected int getMode() {
-        return mode;
-    }
-    protected void increaseMode() {
-        ++mode;
-    }
 
-    protected double getEncoderOffset() {
-        return encoders.getLeftDistance() - encoders.getRightDistance();
-    }
-
-    protected double getDistanceTraveled() {
-        return Math.abs(EncoderControl.getInstance().getLeftDistance() + EncoderControl.getInstance().getRightDistance()) / 2;
-    }
-    
-    protected double getModeTime() {
-        return DriverStation.getInstance().getMatchTime() - resetTime;
-    }
-
-    protected boolean drive(double distance,double speed) {
-        System.out.println("Distance: " + getDistanceTraveled());
-
-        double offset = getEncoderOffset();
-        if (getDistanceTraveled() < distance) {
-            if (offset > drift) {
-                drive.setLeftMotors(-speed);
-                drive.setRightMotors(-speed*.8);
-            } else if (offset < -drift) {
-                drive.setLeftMotors(-speed*.8);
-                drive.setRightMotors(-speed);
-            } else {
-                drive.setRightMotors(-speed);
-                drive.setLeftMotors(-speed);
-            }
-            return false;
-        } else {
-            drive.setLeftMotors(0);
-            drive.setRightMotors(0);
-            return true;
-        }
-    }
-    
     protected boolean turn(float degrees, boolean right) {
 //        if(degrees > 180){
 //            degrees = 360 - degrees;
 //        }
         double distanceTurned = Math.abs(getEncoders().getLeftDistance()) + Math.abs(getEncoders().getRightDistance());
         double change = (degrees / 360F) * DISTANCE_TO_SPIN;
-        
-        System.out.println("change: " + change+ "turned: " + distanceTurned);
+
+        System.out.println("change: " + change + "turned: " + distanceTurned);
         if (distanceTurned < change && right) {
             drive.setLeftMotors(.5);
             drive.setRightMotors(-.5);
@@ -113,21 +67,77 @@ public abstract class Autonomous implements Runnable {
         }
 
     }
-    
-    public void init() {
-        
+
+    protected EncoderControl getEncoders() {
+        return encoders;
     }
-    
+
+    protected DidlerControl getDidlers() {
+        return didlers;
+    }
+
+    protected Catapult getCatapult() {
+        return catapult;
+    }
+
+    protected int getMode() {
+        return mode;
+    }
+
+    protected void increaseMode() {
+        ++mode;
+    }
+
+    protected double getEncoderOffset() {
+        return encoders.getLeftDistance() - encoders.getRightDistance();
+    }
+
+    protected double getDistanceTraveled() {
+        return Math.abs(EncoderControl.getInstance().getLeftDistance() + EncoderControl.getInstance().getRightDistance()) / 2;
+    }
+
+    protected double getModeTime() {
+        return DriverStation.getInstance().getMatchTime() - resetTime;
+    }
+
+    protected boolean drive(double distance, double speed) {
+        System.out.println("Distance: " + getDistanceTraveled());
+
+        double offset = getEncoderOffset();
+        if (getDistanceTraveled() < distance) {
+            if (offset > drift) {
+                drive.setLeftMotors(-speed);
+                drive.setRightMotors(-speed * .8);
+            } else if (offset < -drift) {
+                drive.setLeftMotors(-speed * .8);
+                drive.setRightMotors(-speed);
+            } else {
+                drive.setRightMotors(-speed);
+                drive.setLeftMotors(-speed);
+            }
+            return false;
+        } else {
+            drive.setLeftMotors(0);
+            drive.setRightMotors(0);
+            return true;
+        }
+    }
+
+    public void init() {
+
+    }
+
     public void run() {
-        if (resetMode!=mode) {
+        if (resetMode != mode) {
             drive.stop();
             didlers.moveDidlers(0);
             didlers.spinDidlers(0);
-            
+
             resetTime = DriverStation.getInstance().getMatchTime();
         }
         resetMode = mode;
         routine();
     }
+
     public abstract void routine();
 }
