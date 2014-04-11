@@ -122,7 +122,11 @@ void loop() {
       --wait;
       delay(1);
     } else {
-      if(digitalVictory == HIGH || victorySet){
+      if(digitalSafety == HIGH) {
+        setMode(5);
+        emergencyWipe();
+        wait = 50;
+      } else if(digitalVictory == HIGH || victorySet){
         victorySet = true;
         setMode(7);
         rainbowCycle();
@@ -156,10 +160,6 @@ void loop() {
           setMode(2);
           brightness = 255;
           colorWipe(red,green,blue);
-          wait = 50;
-        } else if(digitalSafety == HIGH) {
-          setMode(5);
-          emergencyWipe();
           wait = 50;
         } else if(digitalRed==LOW&&digitalGreen==LOW&&digitalBlue==LOW) {
           setMode(3);

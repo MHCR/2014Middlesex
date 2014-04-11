@@ -56,8 +56,8 @@ public class RobotMain extends IterativeRobot {
         colorChooser.addObject("Off",new Integer(Lights.OFF));
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
-        autoChooser.addObject("One Ball",new Integer(ONEBALL));
-        autoChooser.addDefault("One and a half ball, jeff and his fuckin names", new Integer(ONEANDAHALF));
+        autoChooser.addDefault("One Ball",new Integer(ONEBALL));
+        autoChooser.addObject("One and a half ball, jeff and his fuckin names", new Integer(ONEANDAHALF));
         autoChooser.addObject("Two Ball", new Integer(TWOBALL));
         SmartDashboard.putData("Autonomous Mode",autoChooser);
         //if we go a second and seem to loop infinitely kill the robot
