@@ -25,9 +25,9 @@ public abstract class Autonomous implements Runnable {
     private final Catapult catapult;
     private int mode;
     private int resetMode;
-    private double resetTime;
-
-    private static double DISTANCE_TO_SPIN = (Math.PI * 11 * EncoderControl.CLICKS_PER_INCH) * 3.1;
+    private double resetTime;    
+    private static double WHEEL_BASE_LENGTH = 34.1;
+    private static double DISTANCE_TO_SPIN = (Math.PI * WHEEL_BASE_LENGTH * EncoderControl.CLICKS_PER_INCH) ;
 
     public Autonomous() {
         catapult = Catapult.getInstance();
@@ -121,6 +121,10 @@ public abstract class Autonomous implements Runnable {
             drive.setRightMotors(0);
             return true;
         }
+    }
+    
+    public void setMode(int mode){
+        this.mode = mode;
     }
 
     public void init() {

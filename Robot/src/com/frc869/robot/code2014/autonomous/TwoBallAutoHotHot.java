@@ -17,7 +17,7 @@ public class TwoBallAutoHotHot extends Autonomous {
 
     private static final double didlerDropSpeed = .35;
 
-    private static double DISTANCE_TO_SPIN = (Math.PI * 11 * EncoderControl.CLICKS_PER_INCH) * 3.1;
+    private boolean goalOnLeft = true;
 
     private double didlerDragSpeed;
     private double didlerIntakeSpeed;
@@ -66,8 +66,9 @@ public class TwoBallAutoHotHot extends Autonomous {
                 break;
             case 3:
                 if ((SmartDashboard.getBoolean("hot", false)) || DriverStation.getInstance().getMatchTime() > 4.95) {
-                    if(DriverStation.getInstance().getMatchTime() < 4.95)
-                        firstGoalHot = true;
+                    if(SmartDashboard.getBoolean("hot", false)){
+                        firstGoalHot = true;                       
+                    }
                     increaseMode();
                 }
                 break;
@@ -86,7 +87,7 @@ public class TwoBallAutoHotHot extends Autonomous {
                     didlerIntakeSpeed += .01;
                 }
                 getDidlers().moveDidlers(didlerDropSpeed);
-                getDidlers().spinDidlers(didlerIntakeSpeed);
+                getDidlers().spinDidlers(didlerIntakeSpeed);               
                 if (getCatapult().fire()) {
                     getCatapult().resetAuto();
                     increaseMode();
@@ -94,7 +95,11 @@ public class TwoBallAutoHotHot extends Autonomous {
                 break;
             case 7:
                 if (!getDidlers().moveDidlers(didlerSettleSpeed) || getModeTime() > 1.0) {
+                    if(firstGoalHot){
+                      setMode(10);  
+                    }else{
                     increaseMode();
+                    }
                 }
                 break;
             case 8:
@@ -112,8 +117,13 @@ public class TwoBallAutoHotHot extends Autonomous {
                     increaseMode();
                 }
             break;
-            case 11:
-                if(getModeTime() > .5){
+                case 11:
+                if (!getDidlers().moveDidlers(.25) || getModeTime() > 1.0) {
+                    increaseMode();
+                }
+                break;
+            case 12:
+                if(getModeTime() > .5){     //d   W   E     i     A   R   E     d     T   A   K   I   N   G     d     H   O   M   E     l     C   A   N   A   D   A    e     !
                     if(getCatapult().fire()){
                         increaseMode();
                     }
