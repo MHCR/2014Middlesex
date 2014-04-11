@@ -56,7 +56,7 @@ public class RobotMain extends IterativeRobot {
         colorChooser.addObject("Off",new Integer(Lights.OFF));
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
-        autoChooser.addObject("Autonomous",new Integer(ONEBALL));
+        autoChooser.addObject("One Ball",new Integer(ONEBALL));
         autoChooser.addDefault("One and a half ball, jeff and his fuckin names", new Integer(ONEANDAHALF));
         autoChooser.addObject("Two Ball", new Integer(TWOBALL));
         SmartDashboard.putData("Autonomous Mode",autoChooser);
@@ -70,6 +70,8 @@ public class RobotMain extends IterativeRobot {
      */
     public void robotPeriodic() {
         Watchdog.getInstance().feed();
+        DriverStation.getInstance().setDigitalOut(8, !Catapult.getInstance().isSafetyIn());
+        DriverStation.getInstance().setDigitalOut(7, !Catapult.getInstance().showSafetyValue());
         //Timer.delay(.01);
     }
 
@@ -110,6 +112,7 @@ public class RobotMain extends IterativeRobot {
      */
     public void autonomousPeriodic() {
         robotPeriodic();
+        lights.safety();
         lights.fire();
         auto.run();
     }
@@ -126,6 +129,7 @@ public class RobotMain extends IterativeRobot {
         lights.setColor(((Integer) colorChooser.getSelected()).intValue());
         lights.checkCountdown();
         lights.fire();
+        lights.safety();
         //lights.searching(Lights.NO);
         RobotDrive.getInstance().control();
         DidlerControl.getInstance().control();
@@ -144,12 +148,11 @@ public class RobotMain extends IterativeRobot {
         lights.countdown();
         RobotDrive.getInstance().control();
         DidlerControl.getInstance().control();
-        Catapult.getInstance().control();
+//        Catapult.getInstance().control();
         if(Logitech.getInstance().getAbutton()) {
             RobotDrive.getInstance().tankDrive(.1, .1);
         } else {
             RobotDrive.getInstance().tankDrive(0, 0);
         }
     }
-
 }

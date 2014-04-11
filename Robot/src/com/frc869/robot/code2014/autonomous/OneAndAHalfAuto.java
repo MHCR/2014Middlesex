@@ -23,7 +23,7 @@ public class OneAndAHalfAuto extends Autonomous {
             case 0:
                 getDidlers().moveDidlers(didlerDropSpeed);
                 getDidlers().spinDidlers(didlerDragSpeed);
-                if(getModeTime() > .5) {
+                if(getModeTime() > 1) {
                     increaseMode();
                 }
                 break;
@@ -40,7 +40,7 @@ public class OneAndAHalfAuto extends Autonomous {
                 }
                 break;
             case 3:
-                if(SmartDashboard.getBoolean("hot",false) || DriverStation.getInstance().getMatchTime() >= 8.5){
+                if(SmartDashboard.getBoolean("hot",false) || DriverStation.getInstance().getMatchTime() >= 5){
                     increaseMode();
                 }
                 break;

@@ -25,13 +25,9 @@ public class Lights {
     public static final int WHITE = 7;
     public static final int ALLIANCE = -1;
     
-    public static final int NO = 0;
-    public static final int LOOKING = 1;
-    public static final int FOUND = 2;
-    
     private final Relay count;
     private final Relay pulse;
-    private final Relay search;
+    private final Relay safety;
     private final Relay found;
     private final Relay shoot;
     private final Relay red;
@@ -39,7 +35,7 @@ public class Lights {
     private final Relay blue;
     
     private Lights() {
-        search = new Relay(1);
+        safety = new Relay(1);
         found = new Relay(2);
         shoot = new Relay(3);
         red = new Relay(4);
@@ -47,7 +43,7 @@ public class Lights {
         blue = new Relay(6);
         count = new Relay(7);
         pulse = new Relay(8);
-        search.setDirection(Relay.Direction.kForward);
+        safety.setDirection(Relay.Direction.kForward);
         found.setDirection(Relay.Direction.kForward);
         shoot.setDirection(Relay.Direction.kForward);
         red.setDirection(Relay.Direction.kForward);
@@ -61,22 +57,6 @@ public class Lights {
             instance = new Lights();
         }
         return instance;
-    }
-    public void searching(int looking) {
-        switch(looking) {
-            default:
-                search.set(Relay.Value.kOff);
-                found.set(Relay.Value.kOff);
-                break;
-            case LOOKING:
-                search.set(Relay.Value.kOn);
-                found.set(Relay.Value.kOff);
-                break;
-            case FOUND:
-                found.set(Relay.Value.kOn);
-                search.set(Relay.Value.kOff);
-                break;
-        }
     }
     public void fire() {
         if(Catapult.getInstance().isFiring()) {
@@ -138,6 +118,13 @@ public class Lights {
                 green.set(Relay.Value.kOff);
                 blue.set(Relay.Value.kOff);
                 break;
+        }
+    }
+    public void safety() {
+        if(Catapult.getInstance().isSafetyIn()) {
+            safety.set(Relay.Value.kOn);
+        } else {
+            safety.set(Relay.Value.kOff);
         }
     }
     public void checkCountdown() {
