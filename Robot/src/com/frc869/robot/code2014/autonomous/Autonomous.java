@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public abstract class Autonomous implements Runnable {
     protected static final double DISTANCE = EncoderControl.CLICKS_PER_INCH * 72;
+    private static double DISTANCE_TO_SPIN = (Math.PI * 11 * EncoderControl.CLICKS_PER_INCH) * 3.1;
     protected static final int drift = 40;
     private final RobotDrive drive;
     private final EncoderControl encoders;
@@ -87,6 +88,30 @@ public abstract class Autonomous implements Runnable {
             drive.setRightMotors(0);
             return true;
         }
+    }
+    
+    protected boolean turn(float degrees, boolean right) {
+//        if(degrees > 180){
+//            degrees = 360 - degrees;
+//        }
+        double distanceTurned = Math.abs(getEncoders().getLeftDistance()) + Math.abs(getEncoders().getRightDistance());
+        double change = (degrees / 360F) * DISTANCE_TO_SPIN;
+        
+        System.out.println("change: " + change+ "turned: " + distanceTurned);
+        if (distanceTurned < change && right) {
+            drive.setLeftMotors(.5);
+            drive.setRightMotors(-.5);
+            return false;
+        } else if (distanceTurned < change && !right) {
+            drive.setLeftMotors(-.5);
+            drive.setRightMotors(.5);
+            return false;
+        } else {
+            drive.setLeftMotors(0);
+            drive.setRightMotors(0);
+            return true;
+        }
+
     }
     
     public void init() {
