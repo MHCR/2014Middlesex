@@ -28,7 +28,7 @@ public class Lights {
     private final Relay count;
     private final Relay pulse;
     private final Relay safety;
-    private final Relay found;
+    private final Relay victory;
     private final Relay shoot;
     private final Relay red;
     private final Relay green;
@@ -36,7 +36,7 @@ public class Lights {
     
     private Lights() {
         safety = new Relay(1);
-        found = new Relay(2);
+        victory = new Relay(2);
         shoot = new Relay(3);
         red = new Relay(4);
         green = new Relay(5);
@@ -44,7 +44,7 @@ public class Lights {
         count = new Relay(7);
         pulse = new Relay(8);
         safety.setDirection(Relay.Direction.kForward);
-        found.setDirection(Relay.Direction.kForward);
+        victory.setDirection(Relay.Direction.kForward);
         shoot.setDirection(Relay.Direction.kForward);
         red.setDirection(Relay.Direction.kForward);
         green.setDirection(Relay.Direction.kForward);
@@ -125,6 +125,13 @@ public class Lights {
             safety.set(Relay.Value.kOn);
         } else {
             safety.set(Relay.Value.kOff);
+        }
+    }
+    public void victory() {
+        if(Logitech.getInstance().getStartButton()) {
+            victory.set(Relay.Value.kOn);
+        } else {
+            victory.set(Relay.Value.kOff);
         }
     }
     public void checkCountdown() {

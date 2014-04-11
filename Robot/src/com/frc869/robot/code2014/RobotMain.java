@@ -130,6 +130,7 @@ public class RobotMain extends IterativeRobot {
         lights.checkCountdown();
         lights.fire();
         lights.safety();
+        lights.victory();
         //lights.searching(Lights.NO);
         RobotDrive.getInstance().control();
         DidlerControl.getInstance().control();

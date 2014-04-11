@@ -74,8 +74,17 @@ public class RobotDrive { //Human interface devices
         rightSpeed = getRightSpeed();
         if(rightJoyStick.getTrigger()){
             tankDrive(rightSpeed, rightSpeed);
-        }else{
-        tankDrive(leftSpeed, rightSpeed);
+        }else if(leftJoyStick.getRawButton(3) 
+                || leftJoyStick.getRawButton(4) 
+                || leftJoyStick.getRawButton(5) 
+                || leftJoyStick.getRawButton(6) 
+                || rightJoyStick.getRawButton(3) 
+                || rightJoyStick.getRawButton(4) 
+                || rightJoyStick.getRawButton(5) 
+                || rightJoyStick.getRawButton(6)){
+        tankDrive(leftSpeed / 2, rightSpeed / 2);
+        }else {
+            tankDrive(leftSpeed, rightSpeed);
         }
     }
 
