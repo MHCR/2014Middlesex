@@ -1,13 +1,13 @@
 <xml version="1.0">
 <dashboard>
 	<widget field="hot" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="272"/>
+		<location x="2" y="221"/>
 	</widget>
 	<widget field="Team Color" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="0" y="44"/>
+		<location x="-1" y="-1"/>
 	</widget>
 	<widget field="Autonomous Mode" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="643" y="70"/>
+		<location x="123" y="1"/>
 	</widget>
 	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.Label">
 		<location x="361" y="474"/>
@@ -19,7 +19,7 @@
 		<height>26</height>
 	</static-widget>
 	<static-widget class="findsquare.FindSquare">
-		<location x="292" y="1"/>
+		<location x="378" y="2"/>
 	</static-widget>
 </dashboard>
 <live-window>
