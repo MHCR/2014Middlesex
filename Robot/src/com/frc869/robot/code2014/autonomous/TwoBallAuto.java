@@ -26,10 +26,10 @@ public class TwoBallAuto extends Autonomous {
         driveSpeed = .5;
     }
     public void init() {
-        didlerSettleSpeed = -1.0 * DriverStation.getInstance().getAnalogIn(1);
-        didlerDragSpeed = DriverStation.getInstance().getAnalogIn(2);
-        driveSpeed = DriverStation.getInstance().getAnalogIn(3);
-        didlerIntakeSpeed = DriverStation.getInstance().getAnalogIn(4);
+        didlerSettleSpeed = -1.0 * .35;
+        didlerDragSpeed = .45;
+        driveSpeed = .5;
+        didlerIntakeSpeed = .5;
     }
     public void routine() {
         switch(getMode()) {
@@ -39,7 +39,7 @@ public class TwoBallAuto extends Autonomous {
             case 0:
                 getDidlers().moveDidlers(didlerDropSpeed);
                 getDidlers().spinDidlers(didlerDragSpeed);
-                if(getModeTime() > .5) {
+                if(getModeTime() > 1) {
                     increaseMode();
                 }
                 break;
@@ -56,7 +56,7 @@ public class TwoBallAuto extends Autonomous {
                 }
                 break;
             case 3:
-                if((SmartDashboard.getBoolean("hot", false)) || DriverStation.getInstance().getMatchTime() > 4.95){
+                if((SmartDashboard.getBoolean("hot", false)) || DriverStation.getInstance().getMatchTime() > 5){
                     increaseMode();  
                 }
                 break;
@@ -82,12 +82,12 @@ public class TwoBallAuto extends Autonomous {
                 }
                 break;
             case 7:
-                if(!getDidlers().moveDidlers(didlerSettleSpeed) || getModeTime() > 1.0){
+                if(!getDidlers().moveDidlers(didlerSettleSpeed, false) || getModeTime() > 1.0){
                     increaseMode();
                 }
                 break;
             case 8:
-                if(!getDidlers().moveDidlers(.25) || getModeTime() > 1.0){
+                if(!getDidlers().moveDidlers(.25, false) || getModeTime() > 1.0){
                     increaseMode();
                 }
                 break;

@@ -158,8 +158,9 @@ public class FindSquare extends WPICameraExtension {
             double ratio = ((double) c.getWidth()) / ((double) c.getHeight());
             double ratio2 = ((double) c.getHeight()) / ((double) c.getWidth());
             
-            if(((double)c.getWidth() / (double)c.getHeight()) > .7 && c.getY() < (binWpi.getHeight() / 2)){
+            if(((double)c.getWidth() / (double)c.getHeight()) > .7 && ((double)c.getWidth() > 10) && ((double)c.getHeight() > 10)&& c.getY() < (binWpi.getHeight() / 2)){
                 table.putBoolean("hot", true);
+               
                 rawImage.drawContour(c, WPIColor.BLUE, 2);
                
                 break;

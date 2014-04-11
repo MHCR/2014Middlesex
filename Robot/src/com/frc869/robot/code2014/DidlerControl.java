@@ -32,6 +32,8 @@ public class DidlerControl {
     private final DigitalInput backwardD;
     private final Logitech controller;
     private double didlerSpeed = 0;
+    private boolean forward = false;
+    private double acceleration = 0;
     
     private DidlerControl() {
         controller = Logitech.getInstance();
@@ -50,7 +52,11 @@ public class DidlerControl {
     }
     
     public void control() {
-        moveDidlers(controller.getLeftStickY() / 2.0);
+        if (Math.abs(controller.getLeftStickY()) > .1){
+            moveDidlers(controller.getLeftStickY() / 2.0,false);
+        } else {
+            moveDidlers(controller.getRightStickY() / 2.0,true);
+        }
         if (controller.getL1()) {            
             rightDidler.set(didlerSpeed * -1.0F);
             leftDidler.set(didlerSpeed * 1.0F);
@@ -64,7 +70,13 @@ public class DidlerControl {
     }
     
     public boolean moveDidlers(double speed) {
+        return moveDidlers(speed,true);
+    }
+    
+    public boolean moveDidlers(double speed, boolean enableAccel) {
         if (!forwardD.get()) {
+            forward = true;
+            acceleration = 0;
             if (speed > .1) {
                 didlerRotator.set(speed);
                 return true;
@@ -73,6 +85,8 @@ public class DidlerControl {
                 return false;
             }
         } else if (!backwardD.get()) {
+            forward = false;
+            acceleration = 0;
             if (speed < -.1) {
                 didlerRotator.set(speed);
                 return true;
@@ -80,7 +94,17 @@ public class DidlerControl {
                 didlerRotator.set(0);
                 return false;
             }            
-        } else {
+        } else if(enableAccel) {
+            if(speed > 0 && !forward && acceleration < speed) {
+                acceleration += .005;
+            } else if(speed < 0 && forward && acceleration > speed) {
+                acceleration -= .005;
+            } else {
+                acceleration = speed;
+            }
+            didlerRotator.set(acceleration);
+            return true;
+        }else{
             didlerRotator.set(speed);
             return true;
         }
