@@ -62,7 +62,7 @@ public class Catapult {
     public void control() {
         if (!isSafetyIn()) {
             firedAuto = false;
-            if (Logitech.getInstance().getR2()) {
+            if (Logitech.getInstance().getR2()) {                 
                 firing = true;
                 catapultMotor.set(-1.00);
             } else if (!catapultSwitch.get() || !firing) {

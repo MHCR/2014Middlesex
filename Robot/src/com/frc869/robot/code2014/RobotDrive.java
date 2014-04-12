@@ -72,7 +72,9 @@ public class RobotDrive { //Human interface devices
     public void control() {       
         leftSpeed = getLeftSpeed();
         rightSpeed = getRightSpeed();
-        if(rightJoyStick.getTrigger()){
+        if(Logitech.getInstance().getL2()){
+           stop();
+        }else if(rightJoyStick.getTrigger()){
             tankDrive(rightSpeed, rightSpeed);
         }else if(leftJoyStick.getRawButton(3) 
                 || leftJoyStick.getRawButton(4) 

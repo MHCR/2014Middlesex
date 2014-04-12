@@ -52,7 +52,10 @@ public class DidlerControl {
     }
     
     public void control() {
-        if (Math.abs(controller.getLeftStickY()) > .1){
+        if(controller.getL2()){
+           moveDidlers(0); 
+        }
+        else if (Math.abs(controller.getLeftStickY()) > .1){
             moveDidlers(controller.getLeftStickY() / 2.0,false);
         } else {
             moveDidlers(controller.getRightStickY() / 2.0,true);
