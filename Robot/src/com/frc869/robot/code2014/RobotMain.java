@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.frc869.robot.code2014.autonomous.OneBallAuto;
 import com.frc869.robot.code2014.autonomous.OneAndAHalfAuto;
 import com.frc869.robot.code2014.autonomous.TwoBallAuto;
+import com.frc869.robot.code2014.lib.CheesyVisionServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -31,6 +32,7 @@ public class RobotMain extends IterativeRobot {
      * This function is run when the robot is first started up and should be
      * used for any initialization code.
      */
+    private CheesyVisionServer server;
     private MaxbotixUltrasonic ultraSonic;
     private Autonomous auto;
     private SendableChooser colorChooser;
@@ -60,6 +62,9 @@ public class RobotMain extends IterativeRobot {
         autoChooser.addObject("One and a half ball, jeff and his fuckin names", new Integer(ONEANDAHALF));
         autoChooser.addObject("Two Ball", new Integer(TWOBALL));
         SmartDashboard.putData("Autonomous Mode",autoChooser);
+        server = CheesyVisionServer.getInstance();
+        server.start();
+        
         //if we go a second and seem to loop infinitely kill the robot
         Watchdog.getInstance().setExpiration(1);
         Watchdog.getInstance().setEnabled(true);
@@ -76,7 +81,7 @@ public class RobotMain extends IterativeRobot {
     }
 
     public void disabledInit() {
-        
+        server.stopSamplingCounts();
     }
 
     public void disabledPeriodic() {
@@ -87,6 +92,9 @@ public class RobotMain extends IterativeRobot {
     }
 
     public void autonomousInit() {
+        server.reset();
+        server.startSamplingCounts();
+        
         Integer valueObject = (Integer) autoChooser.getSelected();
         int value = DEFAULT;
         if(null!=valueObject) {
@@ -111,6 +119,8 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
+        System.out.println("Current upper left: " + server.getUpperLeftStatus() + ", current upper right: " + server.getUpperRightStatus()+"Current left: " + server.getLeftStatus() + ", current right: " + server.getRightStatus());
+        System.out.println("Upper Left count: " + server.getUpperLeftCount() + ", upper right count: " + server.getUpperRightCount() +"Left count: " + server.getLeftCount() + ", right count: " + server.getRightCount() + ", total: " + server.getTotalCount() + "\n");
         robotPeriodic();
         lights.safety();
         lights.fire();
