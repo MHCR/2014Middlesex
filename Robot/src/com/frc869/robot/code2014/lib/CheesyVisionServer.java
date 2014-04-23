@@ -141,10 +141,10 @@ public class CheesyVisionServer implements Runnable {
             int read = is.read(b);
             for (int i = 0; i < read; ++i) {
               byte reading = b[i];
-              boolean upperLeftStatus = (reading & (1 << 3)) > 0;
-              boolean upperRightStatus = (reading & (1 << 2)) > 0;
-              boolean leftStatus = (reading & (1 << 1)) > 0;
-              boolean rightStatus = (reading & (1 << 0)) > 0;
+              boolean upperLeftStatus = (reading & (1 << 3)) == 0;
+              boolean upperRightStatus = (reading & (1 << 2)) == 0;
+              boolean leftStatus = (reading & (1 << 1)) == 0;
+              boolean rightStatus = (reading & (1 << 0)) == 0;
               CheesyVisionServer.this.curUpperLeftStatus_ = upperLeftStatus;
               CheesyVisionServer.this.curUpperRightStatus_ = upperRightStatus;
               CheesyVisionServer.this.curLeftStatus_ = leftStatus;

@@ -8,16 +8,18 @@
 package com.frc869.robot.code2014;
 
 import com.frc869.robot.code2014.autonomous.Autonomous;
+import com.frc869.robot.code2014.autonomous.CheesyVisionAuto;
+import com.frc869.robot.code2014.autonomous.OneAndAHalfAuto;
+import com.frc869.robot.code2014.autonomous.OneBallAuto;
+import com.frc869.robot.code2014.autonomous.TwoBallAuto;
+import com.frc869.robot.code2014.autonomous.TwoBallAutoHotHot;
+import com.frc869.robot.code2014.lib.CheesyVisionServer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.frc869.robot.code2014.autonomous.OneBallAuto;
-import com.frc869.robot.code2014.autonomous.OneAndAHalfAuto;
-import com.frc869.robot.code2014.autonomous.TwoBallAuto;
-import com.frc869.robot.code2014.lib.CheesyVisionServer;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -42,6 +44,8 @@ public class RobotMain extends IterativeRobot {
     private static final int ONEBALL = 1;
     private static final int ONEANDAHALF = 2;
     private static final int TWOBALL = 3;
+    private static final int TWOHOT = 4;
+    private static final int CHEEZYONEBALL = 5;
 
     public void robotInit() {
         //   ultraSonic = MaxbotixUltrasonic.getInstance();
@@ -59,8 +63,10 @@ public class RobotMain extends IterativeRobot {
         SmartDashboard.putData("Team Color",colorChooser);
         autoChooser = new SendableChooser();
         autoChooser.addDefault("One Ball",new Integer(ONEBALL));
-        autoChooser.addObject("One and a half ball, jeff and his fuckin names", new Integer(ONEANDAHALF));
+        autoChooser.addObject("One and a half ball", new Integer(ONEANDAHALF));
         autoChooser.addObject("Two Ball", new Integer(TWOBALL));
+        autoChooser.addObject("Two Hot", new Integer(TWOHOT));
+        autoChooser.addObject("Cheesy Vision One Ball", new Integer(CHEEZYONEBALL));
         SmartDashboard.putData("Autonomous Mode",autoChooser);
         server = CheesyVisionServer.getInstance();
         server.start();
@@ -110,6 +116,12 @@ public class RobotMain extends IterativeRobot {
                 break;
             case TWOBALL:
                 auto = new TwoBallAuto();
+                break;
+            case TWOHOT:
+                auto = new TwoBallAutoHotHot();
+                break;
+            case CHEEZYONEBALL:
+                auto = new CheesyVisionAuto();
                 break;
         }
         auto.init();
