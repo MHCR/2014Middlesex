@@ -109,11 +109,12 @@ public class TwoBallAutoHotHot extends Autonomous {
                 break;
             case 9:
                 if (getCatapult().fire()) {
+                    turn(35,false);
                     increaseMode();
                 }
                 break;
             case 10:
-                if(turn(35, false)){
+                if(turn()){
                     increaseMode();
                 }
             break;

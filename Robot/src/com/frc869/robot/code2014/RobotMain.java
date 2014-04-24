@@ -131,8 +131,8 @@ public class RobotMain extends IterativeRobot {
      * This function is called periodically during autonomous
      */
     public void autonomousPeriodic() {
-        System.out.println("Current upper left: " + server.getUpperLeftStatus() + ", current upper right: " + server.getUpperRightStatus()+"Current left: " + server.getLeftStatus() + ", current right: " + server.getRightStatus());
-        System.out.println("Upper Left count: " + server.getUpperLeftCount() + ", upper right count: " + server.getUpperRightCount() +"Left count: " + server.getLeftCount() + ", right count: " + server.getRightCount() + ", total: " + server.getTotalCount() + "\n");
+//        System.out.println("Current upper left: " + server.getUpperLeftStatus() + ", current upper right: " + server.getUpperRightStatus()+"Current left: " + server.getLeftStatus() + ", current right: " + server.getRightStatus());
+//        System.out.println("Upper Left count: " + server.getUpperLeftCount() + ", upper right count: " + server.getUpperRightCount() +"Left count: " + server.getLeftCount() + ", right count: " + server.getRightCount() + ", total: " + server.getTotalCount() + "\n");
         robotPeriodic();
         lights.safety();
         lights.fire();

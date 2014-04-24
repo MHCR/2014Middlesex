@@ -26,6 +26,9 @@ public abstract class Autonomous implements Runnable {
     private int mode;
     private int resetMode;
     private double resetTime;    
+    private boolean turning;
+    private int degrees;
+    private boolean right;
     private static double WHEEL_BASE_LENGTH = 34.1;
     private static double DISTANCE_TO_SPIN = (Math.PI * WHEEL_BASE_LENGTH * EncoderControl.CLICKS_PER_INCH) ;
 
@@ -44,30 +47,42 @@ public abstract class Autonomous implements Runnable {
         return drive;
     }
 
-    protected boolean turn(float degrees, boolean right) {
-//        if(degrees > 180){
-//            degrees = 360 - degrees;
-//        }
-        double distanceTurned = Math.abs(getEncoders().getLeftDistance()) + Math.abs(getEncoders().getRightDistance());
-        double change = (degrees / 360F) * DISTANCE_TO_SPIN;
+    protected boolean turn() {
+        if(turning) {
+            double distanceTurned = Math.abs(getEncoders().getLeftDistance()) + Math.abs(getEncoders().getRightDistance());
+            double change = (degrees / 360F) * DISTANCE_TO_SPIN;
 
-        System.out.println("change: " + change + "turned: " + distanceTurned);
-        if (distanceTurned < change && right) {
-            drive.setLeftMotors(.5);
-            drive.setRightMotors(-.5);
-            return false;
-        } else if (distanceTurned < change && !right) {
-            drive.setLeftMotors(-.5);
-            drive.setRightMotors(.5);
-            return false;
+            System.out.println("change: " + change + "turned: " + distanceTurned);
+            if (distanceTurned < change && right) {
+                drive.setLeftMotors(.5);
+                drive.setRightMotors(-.5);
+                return false;
+            } else if (distanceTurned < change && !right) {
+                drive.setLeftMotors(-.5);
+                drive.setRightMotors(.5);
+                return false;
+            } else {
+                drive.setLeftMotors(0);
+                drive.setRightMotors(0);
+                turning = false;
+                getEncoders().reset();
+                return true;
+            }
         } else {
-            drive.setLeftMotors(0);
-            drive.setRightMotors(0);
             return true;
         }
+    }
 
+    public boolean isTurning() {
+        return turning;
     }
     
+    protected boolean turn(int degrees, boolean right) {
+        this.right = right;
+        this.degrees = degrees;
+        turning = true;
+        return turn();
+    }
 
     protected EncoderControl getEncoders() {
         return encoders;
@@ -120,6 +135,7 @@ public abstract class Autonomous implements Runnable {
         } else {
             drive.setLeftMotors(0);
             drive.setRightMotors(0);
+            getEncoders().reset();
             return true;
         }
     }
@@ -137,7 +153,6 @@ public abstract class Autonomous implements Runnable {
             drive.stop();
             didlers.moveDidlers(0);
             didlers.spinDidlers(0);
-
             resetTime = DriverStation.getInstance().getMatchTime();
         }
         resetMode = mode;

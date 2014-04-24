@@ -8,7 +8,6 @@ package com.frc869.robot.code2014.autonomous;
 
 import com.frc869.robot.code2014.lib.CheesyVisionServer;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  *
@@ -17,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class CheesyVisionAuto extends Autonomous {
 
     private static final double didlerDropSpeed = .5;
+    private double cheesyTimer = 1;
 
     public void routine() {
         switch (getMode()) {
@@ -35,20 +35,19 @@ public class CheesyVisionAuto extends Autonomous {
                 }
                 break;
             case 2:
-                if (getModeTime() > .75) {
-                    increaseMode();
+                if(turn() && (DriverStation.getInstance().getMatchTime() - cheesyTimer) > .5) {
+                    if(CheesyVisionServer.getInstance().getUpperRightStatus()) {
+                        increaseMode();
+                    } else if(CheesyVisionServer.getInstance().getLeftStatus()){
+                        turn(20, false);
+                        cheesyTimer = DriverStation.getInstance().getMatchTime();
+                    }else if(CheesyVisionServer.getInstance().getRightStatus()){
+                        turn(20, true);
+                        cheesyTimer = DriverStation.getInstance().getMatchTime();
+                    }
                 }
                 break;
             case 3:
-                if (!CheesyVisionServer.getInstance().getUpperRightStatus()) {
-                    increaseMode();
-                }else if(CheesyVisionServer.getInstance().getLeftCount() - CheesyVisionServer.getInstance().getRightCount() > 10){
-                    turn(20, false);
-                }else if(CheesyVisionServer.getInstance().getRightCount() - CheesyVisionServer.getInstance().getLeftCount() > 10){
-                    turn(20, true);
-                }
-                break;
-            case 4:
                 if (getCatapult().fire()) {
                     increaseMode();
                 }
