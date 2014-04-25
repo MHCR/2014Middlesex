@@ -83,6 +83,8 @@ public class RobotMain extends IterativeRobot {
         Watchdog.getInstance().feed();
         DriverStation.getInstance().setDigitalOut(8, !Catapult.getInstance().isSafetyIn());
         DriverStation.getInstance().setDigitalOut(7, !Catapult.getInstance().showSafetyValue());
+        System.out.println("right: " + EncoderControl.getInstance().getRightDistance());
+        System.out.println("left: " + EncoderControl.getInstance().getLeftDistance());
         //Timer.delay(.01);
     }
 
